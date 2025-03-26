@@ -1,0 +1,16 @@
+title: Sussurros do Destino # Site title variable used in header/footer
+# description: A short description of your site (optional)
+# baseurl: "" # Important: Keep empty for user pages (username.github.io)
+               # Or set to "/repository-name" for project pages
+# url: "https://your-username.github.io" # Your site URL (optional but good)
+
+# Build settings
+theme: minima # You can use a basic theme or remove this for custom CSS only
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag # Good for SEO basics
+
+# Exclude from processing
+# exclude:
+#   - Gemfile
+#   - Gemfile.lock

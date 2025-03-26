@@ -1,0 +1,50 @@
+---
+layout: default
+title: Sussurros do Destino - Leitura de Tarot
+id: tarot-app-page # Add ID for CSS scoping
+---
+
+<h1>Leitura de Tarot Interativa</h1>
+
+<!-- Tarot App HTML Structure (Controls, Container, Result, Modal) -->
+<div id="controls">
+    <div>
+        <label for="spread-select">Escolha a Tiragem:</label>
+        <select id="spread-select">
+            <option value="3" selected>Passado, Presente, Futuro (3 cartas)</option>
+            <option value="love5">Foco Relacionamento (5 cartas)</option>
+            <option value="5">Tiragem de Orientação (5 cartas)</option>
+        </select>
+    </div>
+    <div>
+        <label for="question-input">Sua Pergunta (opcional):</label>
+        <input type="text" id="question-input" placeholder="Concentre sua intenção...">
+    </div>
+    <button id="start-reading-button">Embaralhar e Ler</button>
+</div>
+
+<div id="reading-container">
+    <!-- Cards will be generated here by JS -->
+</div>
+
+<div id="reading-result">
+    <!-- Interpretation will be shown here -->
+</div>
+
+<button id="read-again-button" style="display: none;">Ler Novamente</button>
+
+<!-- The Modal -->
+<div id="card-modal" class="modal">
+  <div class="modal-content">
+    <span class="close-button" title="Fechar">×</span>
+    <img id="modal-card-image" src="" alt="Imagem da Carta">
+    <h3 id="modal-card-name"></h3>
+    <p><strong>Significado Direito:</strong> <span id="modal-card-meaning"></span></p>
+    <p><strong>Significado Invertido:</strong> <span id="modal-card-reversed"></span></p>
+  </div>
+</div>
+<!-- End Tarot App HTML Structure -->
+
+<!-- Link the Tarot App JavaScript ONLY on this page -->
+<!-- IMPORTANT: Make sure the path is correct relative to the root -->
+<script src="{{ '/js/tarot-app.js' | relative_url }}"></script>

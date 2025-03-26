@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Use page title from Front Matter, fallback to site title -->
+    <title>{{ page.title | default: site.title | default: "Sussurros do Destino" }}</title>
+    <link rel="stylesheet" href="{{ '/css/style.css' | relative_url }}">
+    <!-- Add other head elements if needed -->
+</head>
+<body>
+    {% include header.html %}
+
+    <main {% if page.id %}id="{{ page.id }}"{% endif %}>
+        {{ content }} {# This is where page content will be injected #}
+    </main>
+
+    {% include footer.html %}
+
+    <!-- Include global JS if any, app-specific JS goes in page files -->
+</body>
+</html>
