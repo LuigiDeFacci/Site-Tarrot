@@ -378,6 +378,110 @@ main section {
 .modal-content strong { color: var(--accent-color); display: block; margin-bottom: 6px; font-size: 1.05em; }
 .modal-content::after { content: ""; clear: both; display: table; }
 
+/* === Landing Page Specific Styles === */
+
+.landing-image {
+  display: block; /* Prevents extra space below image */
+  max-width: 600px; /* Max size */
+  width: 90%; /* Responsive width */
+  margin: 10px auto 30px auto; /* Center image and add space */
+  border-radius: 12px; /* Nicer rounded corners */
+  box-shadow: 0 8px 25px var(--shadow-color); /* Use existing shadow */
+  border: 1px solid var(--card-border-color); /* Subtle border */
+}
+
+/* Call-to-Action Section */
+.cta-section {
+  background-color: rgba(var(--accent-color-rgb, 176, 163, 215), 0.1); /* Use accent glow */
+  border: 1px solid var(--card-border-color);
+  border-radius: 12px;
+  padding: 25px 30px;
+  margin: 40px auto; /* Space it out */
+  max-width: 750px; /* Control width */
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.cta-section h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.6em; /* Make CTA heading stand out */
+  color: var(--accent-color);
+}
+
+.cta-section p {
+  margin-bottom: 25px;
+  font-size: 1.1em;
+  line-height: 1.7;
+  max-width: 600px; /* Limit paragraph width inside */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Basic Button Styling */
+.button {
+    display: inline-block; /* Allows padding and margins */
+    padding: 12px 25px;
+    font-size: 1.05em;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* Primary Button Style (for Tarot CTA) */
+.button-primary {
+    background: linear-gradient(to bottom right, var(--accent-color), #8f83b9); /* Use your accent gradient */
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+    text-transform: uppercase;
+    letter-spacing: 1.1px;
+}
+
+.button-primary:hover,
+.button-primary:focus {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+    filter: brightness(1.15);
+    color: #fff; /* Ensure text stays white on hover */
+}
+
+/* Optional: Style for the secondary explore link */
+.explore-link {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 0.95em;
+  opacity: 0.9;
+}
+
+/* --- Responsive Adjustments for Landing Page --- */
+
+@media (max-width: 600px) {
+  .landing-image {
+    max-width: 95%; /* Allow slightly larger on smaller screens */
+  }
+
+  .cta-section {
+    padding: 20px;
+  }
+
+  .cta-section h2 {
+    font-size: 1.4em;
+  }
+
+  .cta-section p {
+    font-size: 1em;
+  }
+
+  .button {
+    padding: 10px 20px;
+    font-size: 1em;
+  }
+}
 
 /* === Responsive Adjustments === */
 
