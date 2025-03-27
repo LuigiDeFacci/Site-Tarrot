@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Sussurros do Destino - Sobre
+title:Sobre
 ---
 
 # Sobre Sussurros do Destino

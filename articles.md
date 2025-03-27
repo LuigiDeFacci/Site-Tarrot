@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Sussurros do Destino - Artigos
+title: Artigos
 ---
 
 # Reflexões Místicas

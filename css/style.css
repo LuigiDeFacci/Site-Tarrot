@@ -180,26 +180,30 @@ img {
 /* --- Header Responsive (No Toggle) --- */
 @media (max-width: 768px) {
     .header-container {
-        justify-content: center; /* Center branding and nav when stacked */
-        gap: 0.5rem; /* Reduce gap when stacked */
+        /* Change from space-between to center when stacking */
+        justify-content: center;
+        gap: 0.5rem; /* Keep small gap between title row and nav row */
     }
 
     .site-branding {
-       width: 100%; /* Make branding take full width */
-       text-align: center; /* Center the title text */
+       /* No longer force 100% width, let flex center it */
+       text-align: center; /* Keep title text itself centered */
+       /* Ensure it doesn't prevent nav from dropping below */
+       flex-basis: 100%; /* Make it take full width in the flex flow initially */
+       margin-bottom: 0.25rem; /* Add small space before nav */
     }
 
     .main-nav {
-        width: 100%; /* Ensure nav takes full width */
-        margin-top: 0.5rem; /* Add a bit of space below title */
+        /* No longer force 100% width */
+        /* Ensure it appears below title */
+        flex-basis: 100%; /* Make it take full width in the flex flow */
     }
 
     .main-nav ul {
-        justify-content: center; /* Ensure items remain centered */
-        gap: 1rem 1.5rem; /* Adjust vertical and horizontal gap */
+        justify-content: center; /* Center the flex items (li) within the ul */
+        gap: 0.75rem 1.25rem; /* Adjust vertical/horizontal gap slightly */
     }
 }
-
 
 /* === Main Content Area === */
 /* (Keep existing styles) */
