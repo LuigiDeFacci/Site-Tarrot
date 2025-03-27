@@ -1,35 +1,40 @@
-<!-- Alternative: Keep the wrapper if needed by theme CSS -->
 <!-- Inside YourProject/_includes/header.html -->
 <header class="site-header" role="banner">
-  <div class="wrapper"> {/* Keep this wrapper from the theme's original */}
+  <!-- Keeping the theme's wrapper div -->
+  <div class="wrapper">
 
-    <div class="header-container"> {/* Our inner container for flexbox */}
+    <!-- Our inner container for flexbox layout -->
+    <div class="header-container">
 
-        <div class="site-branding">
-            <h1 class="site-title">
-                <a href="{{ '/' | relative_url }}" rel="author"> {/* Added rel="author" like theme */}
-                    {{ site.title | default: "Sussurros do Destino" }}
-                </a>
-            </h1>
-        </div>
+      <div class="site-branding">
+        <h1 class="site-title">
+          <a href="{{ '/' | relative_url }}" rel="author"> <!-- Added rel="author" like theme -->
+            {{ site.title | default: "Sussurros do Destino" }}
+          </a>
+        </h1>
+      </div>
 
-        <nav class="main-nav" id="main-navigation" role="navigation" aria-label="Main navigation">
-             {/* Use page_paths logic like minima theme for better baseurl handling */}
-            {%- assign default_paths = site.pages | map: "path" -%}
-            {%- assign page_paths = site.header_pages | default: default_paths -%}
-            <ul>
-            {%- if page_paths -%}
-                {%- for path in page_paths -%}
-                {%- assign my_page = site.pages | where: "path", path | first -%}
-                {%- if my_page.title -%}
-                <li><a class="page-link" href="{{ my_page.url | relative_url }}" {% if page.url == my_page.url %}class="active"{% endif %}>{{ my_page.title | escape }}</a></li>
-                {%- endif -%}
-                {%- endfor -%}
-            {%- endif -%}
-             </ul>
-        </nav>
+      <nav class="main-nav" id="main-navigation" role="navigation" aria-label="Main navigation">
+        <!-- Using standard minima theme logic for page links -->
+        {%- assign default_paths = site.pages | map: "path" -%}
+        {%- assign page_paths = site.header_pages | default: default_paths -%}
+        <ul>
+          {%- if page_paths -%}
+            {%- for path in page_paths -%}
+              {%- assign my_page = site.pages | where: "path", path | first -%}
+              {%- if my_page.title -%}
+                <li>
+                  <a class="page-link" href="{{ my_page.url | relative_url }}" {% if page.url == my_page.url %}class="active"{% endif %}>
+                    {{ my_page.title | escape }}
+                  </a>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
+        </ul>
+      </nav>
 
-    </div> {/* End of header-container */}
+    </div> <!-- End of header-container -->
 
-  </div> {/* End of wrapper */}
+  </div> <!-- End of wrapper -->
 </header>
