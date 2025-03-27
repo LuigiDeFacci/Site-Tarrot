@@ -4,6 +4,14 @@ title: Sussurros do Destino # Site title variable used in header/footer
                # Or set to "/repository-name" for project pages
 # url: "https://your-username.github.io" # Your site URL (optional but good)
 
+# List the FILENAMES relative to your project root
+header_pages:
+  - index.html       # For "Início"
+  - tarot.html       # For "Leitura de Tarot"
+  - articles.md    # For "Artigos"
+  - about.md       # For "Sobre"
+  # Add any other pages you want in the header here, in order
+
 # Build settings
 theme: minima # You can use a basic theme or remove this for custom CSS only
 plugins:
