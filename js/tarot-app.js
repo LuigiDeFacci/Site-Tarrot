@@ -123,52 +123,115 @@
             controlsDiv.style.display = 'none'; readingResult.innerHTML = ''; readingResult.classList.remove('visible');
             readingContainer.innerHTML = ''; drawnCardsData = []; readAgainButton.style.display = 'none';
             const spreadIdentifier = spreadSelect.value; let numberOfCards;
-            if (spreadIdentifier === 'love5') { numberOfCards = 5; } else { numberOfCards = parseInt(spreadIdentifier); }
-            if (isNaN(numberOfCards) || numberOfCards <= 0) { console.error("Invalid number of cards selected."); readingInProgress = false; controlsDiv.style.display = 'flex'; return; }
+            // Using specific string identifiers for clarity
+            if (spreadIdentifier === 'love5') {
+                 numberOfCards = 5;
+            } else if (spreadIdentifier === 'celtic10') { // Example: Added another potential spread
+                 numberOfCards = 10;
+            } else { // Default to parsing if it's a number like '1', '3', '5'
+                 numberOfCards = parseInt(spreadIdentifier);
+            }
+            // Robust check for valid number
+            if (isNaN(numberOfCards) || numberOfCards <= 0 || numberOfCards > cards.length) {
+                console.error("Invalid number of cards selected or spread identifier unknown:", spreadIdentifier);
+                readingInProgress = false;
+                controlsDiv.style.display = 'flex'; // Show controls again on error
+                return;
+            }
             let shuffledDeck = [...cards]; shuffle(shuffledDeck); const spread = shuffledDeck.slice(0, numberOfCards);
             spread.forEach((cardData, index) => {
-                const isReversed = Math.random() < 0.3;
+                const isReversed = Math.random() < 0.3; // 30% chance of being reversed
+                // Store spreadIdentifier with each card for later use in interpretation
                 drawnCardsData.push({ ...cardData, reversed: isReversed, id: `card-${index}`, spread: spreadIdentifier });
                 createCardElement(cardData, index, isReversed);
             });
-            setTimeout(() => { readingContainer.addEventListener('click', handleCardClick); readingInProgress = false; }, numberOfCards * 150 + 100);
+            // Delay allowing card deal animation before enabling clicks
+            setTimeout(() => {
+                 readingContainer.addEventListener('click', handleCardClick);
+                 readingInProgress = false; // Allow clicks after animation delay
+            }, numberOfCards * 150 + 100); // Adjust timing based on animation
         }
 
         function createCardElement(cardData, index, isReversed) { /* Creates HTML for each card with animation */
-            const placeholder = document.createElement('div'); placeholder.classList.add('card-placeholder'); placeholder.style.animationDelay = `${index * 0.15}s`;
-            const cardElement = document.createElement('div'); cardElement.classList.add('card'); cardElement.dataset.cardId = `card-${index}`;
-            const cardBack = document.createElement('div'); cardBack.classList.add('card-face', 'card-back'); cardBack.textContent = index + 1;
-            const cardFront = document.createElement('div'); cardFront.classList.add('card-face', 'card-front');
+            const placeholder = document.createElement('div');
+            placeholder.classList.add('card-placeholder');
+            placeholder.style.animationDelay = `${index * 0.15}s`; // Stagger animation
+
+            const cardElement = document.createElement('div');
+            cardElement.classList.add('card');
+            cardElement.dataset.cardId = `card-${index}`; // Link element to card data via ID
+
+            const cardBack = document.createElement('div');
+            cardBack.classList.add('card-face', 'card-back');
+            cardBack.textContent = index + 1; // Show position number on back
+
+            const cardFront = document.createElement('div');
+            cardFront.classList.add('card-face', 'card-front');
+
             const img = document.createElement('img');
-            const placeholderBg = getComputedStyle(document.documentElement).getPropertyValue('--card-back-color').substring(1); const placeholderText = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').substring(1);
-            // Changed placeholder text to Portuguese
-            img.src = cardData.image.startsWith('URL_') ? `https://via.placeholder.com/180x300/${placeholderBg}/${placeholderText}?text=Carta+${index+1}` : cardData.image;
-            img.alt = cardData.name; if (isReversed) img.classList.add('reversed-img');
-            img.onerror = () => { img.src = `https://via.placeholder.com/180x300/FF0000/FFFFFF?text=Erro+ao+Carregar`; console.error(`Failed to load image for ${cardData.name}`); };
-            cardFront.appendChild(img); cardElement.appendChild(cardBack); cardElement.appendChild(cardFront); placeholder.appendChild(cardElement); readingContainer.appendChild(placeholder);
+            // Use CSS variables for placeholder colors for easier theming
+            const placeholderBg = getComputedStyle(document.documentElement).getPropertyValue('--card-back-color').trim().substring(1); // Remove potential whitespace and '#'
+            const placeholderText = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim().substring(1); // Remove potential whitespace and '#'
+
+            // Check if image is a placeholder URL
+            img.src = cardData.image.startsWith('URL_')
+                ? `https://via.placeholder.com/180x300/${placeholderBg}/${placeholderText}?text=Carta+${index+1}` // Portuguese placeholder
+                : cardData.image;
+            img.alt = cardData.name;
+            if (isReversed) {
+                img.classList.add('reversed-img'); // Apply reversal styling via CSS
+            }
+            // Basic error handling for images
+            img.onerror = () => {
+                 img.src = `https://via.placeholder.com/180x300/FF0000/FFFFFF?text=Erro+ao+Carregar`; // Error placeholder
+                 console.error(`Failed to load image for ${cardData.name}: ${cardData.image}`);
+            };
+
+            cardFront.appendChild(img);
+            cardElement.appendChild(cardBack);
+            cardElement.appendChild(cardFront);
+            placeholder.appendChild(cardElement);
+            readingContainer.appendChild(placeholder);
         }
 
         function handleCardClick(event) { /* Handles card flip animation and checks if reading is complete */
-            if (readingInProgress) return; const clickedCardPlaceholder = event.target.closest('.card-placeholder'); if (!clickedCardPlaceholder) return;
+            if (readingInProgress) return; // Prevent clicks during animation/setup
+
+            const clickedCardPlaceholder = event.target.closest('.card-placeholder');
+            if (!clickedCardPlaceholder) return; // Clicked outside a card
+
             const clickedCard = clickedCardPlaceholder.querySelector('.card');
             if (clickedCard && !clickedCard.classList.contains('flipped')) {
-                readingInProgress = true; clickedCard.classList.add('flipped');
+                readingInProgress = true; // Disable further clicks during flip animation
+                clickedCard.classList.add('flipped');
+
+                // Wait for the flip animation to finish
                 clickedCard.addEventListener('transitionend', () => {
-                    readingInProgress = false; const allCards = readingContainer.querySelectorAll('.card'); const flippedCards = readingContainer.querySelectorAll('.card.flipped');
-                    if (flippedCards.length === allCards.length) { readingContainer.removeEventListener('click', handleCardClick); showReadingResult(); addModalEventListeners(); }
-                }, { once: true });
+                    readingInProgress = false; // Re-enable clicks after animation
+                    // Check if all cards are flipped
+                    const allCards = readingContainer.querySelectorAll('.card');
+                    const flippedCards = readingContainer.querySelectorAll('.card.flipped');
+                    if (flippedCards.length === allCards.length) {
+                        readingContainer.removeEventListener('click', handleCardClick); // Prevent further flips
+                        showReadingResult();
+                        addModalEventListeners(); // Add listeners AFTER results are shown
+                    }
+                }, { once: true }); // Automatically remove listener after it runs once
             }
         }
 
          // Positional keywords translated to pt-BR
         function getPositionalKeywords(index, spreadIdentifier) {
-            if (spreadIdentifier === '3') { // Passado, Presente, Futuro
+            // Ensure spreadIdentifier is treated as a string for comparison
+            const idStr = String(spreadIdentifier);
+
+            if (idStr === '3') { // Passado, Presente, Futuro (3 cards)
                 switch (index) {
                     case 0: return { label: "Influência Passada", context: "Em seu passado recente, ou influenciando a situação," };
                     case 1: return { label: "Desafio/Foco Presente", context: "Atualmente, a energia central ou o desafio é representado por" };
                     case 2: return { label: "Resultado/Potencial Futuro", context: "Olhando adiante, o resultado potencial ou a direção é sugerido por" };
                 }
-            } else if (spreadIdentifier === '5') { // Tiragem de Orientação
+            } else if (idStr === '5') { // Tiragem de Orientação (5 cards - general)
                  switch (index) {
                     case 0: return { label: "O Coração da Questão", context: "No cerne desta situação encontra-se" };
                     case 1: return { label: "Obstáculo ou Fator Cruzado", context: "O principal obstáculo ou influência cruzada é" };
@@ -176,7 +239,7 @@
                     case 3: return { label: "Ambiente do Futuro Próximo", context: "No futuro próximo, a energia circundante aponta para" };
                     case 4: return { label: "Resultado Potencial a Longo Prazo", context: "O resultado potencial a longo prazo, se as coisas continuarem neste caminho, é indicado por" };
                 }
-            } else if (spreadIdentifier === 'love5') { // Foco Relacionamento
+            } else if (idStr === 'love5') { // Foco Relacionamento (5 cards - specific)
                 switch (index) {
                     case 0: return { label: "Você / Seu Papel", context: "Sua energia e perspectiva nesta conexão são refletidas por" };
                     case 1: return { label: "Parceiro(a) / Papel do Outro", context: "A energia ou perspectiva da outra pessoa envolvida é representada por" };
@@ -185,61 +248,168 @@
                     case 4: return { label: "Potencial / Conselho", context: "A direção potencial para esta conexão, ou conselho sobre como proceder, é indicada por" };
                 }
             }
-            return { label: `Posição ${index + 1}`, context: `Na posição ${index + 1},`}; // Fallback
+            // Add more `else if` blocks here for other spreads (e.g., 'celtic10')
+
+            // Fallback for unknown spreads or single card draws
+            return { label: `Posição ${index + 1}`, context: `Na posição ${index + 1},`};
         }
 
         // Interpretation function with pt-BR text
         function showReadingResult() {
-            let interpretationHTML = ''; const userQuestion = questionInput.value.trim(); const spreadIdentifier = drawnCardsData.length > 0 ? drawnCardsData[0].spread : '3';
-            let majorArcanaCount = drawnCardsData.filter(card => cards.slice(0, 22).some(major => major.name === card.name)).length; let introSummary = "";
-            // Translated summaries
-            if (majorArcanaCount >= Math.ceil(drawnCardsData.length / 2)) { introSummary = "<p><em>Esta leitura destaca lições de vida significativas ou energias arquetípicas. Preste muita atenção às cartas dos Arcanos Maiores.</em></p>"; }
-            else if (majorArcanaCount === 0 && drawnCardsData.length > 1) { introSummary = "<p><em>Esta leitura foca principalmente em assuntos do dia-a-dia e situações práticas, conforme indicado pelos Arcanos Menores.</em></p>"; }
+            let interpretationHTML = '';
+            const userQuestion = questionInput.value.trim();
+            // Ensure we have data and get the spread identifier from the first card (they all should have it)
+            const spreadIdentifier = drawnCardsData.length > 0 ? drawnCardsData[0].spread : 'unknown';
+
+            // Calculate Major Arcana count
+            let majorArcanaCount = drawnCardsData.filter(card =>
+                cards.slice(0, 22).some(major => major.name === card.name) // Assuming first 22 are Major Arcana
+            ).length;
+            let introSummary = "";
+
+            // Translated summaries based on Major Arcana presence
+            if (drawnCardsData.length > 1) { // Only show summary for multi-card spreads
+                 if (majorArcanaCount >= Math.ceil(drawnCardsData.length / 2)) {
+                    introSummary = "<p><em>Esta leitura destaca lições de vida significativas ou energias arquetípicas. Preste muita atenção às cartas dos Arcanos Maiores.</em></p>";
+                 } else if (majorArcanaCount === 0) {
+                    introSummary = "<p><em>Esta leitura foca principalmente em assuntos do dia-a-dia e situações práticas, conforme indicado pelos Arcanos Menores.</em></p>";
+                 }
+            }
+
+            // Build interpretation HTML
             // Translated heading
-            if (userQuestion) { interpretationHTML += `<h2>Leitura para: "${userQuestion}"</h2>`; } else { interpretationHTML += `<h2>Sua Leitura</h2>`; }
-            interpretationHTML += introSummary;
+            if (userQuestion) {
+                // Use textContent to prevent potential XSS if user input had HTML/script tags
+                const h2 = document.createElement('h2');
+                h2.textContent = `Leitura para: "${userQuestion}"`;
+                interpretationHTML += h2.outerHTML;
+            } else {
+                interpretationHTML += `<h2>Sua Leitura</h2>`;
+            }
+
+            interpretationHTML += introSummary; // Add the summary paragraph
+
             drawnCardsData.forEach((card, index) => {
-                const positionInfo = getPositionalKeywords(index, spreadIdentifier); const cardName = card.name; const isReversed = card.reversed;
-                const meaningText = isReversed ? card.reversedMeaning : card.meaning; const reversalTag = isReversed ? "(Invertida)" : ""; let interpretationText = "";
-                interpretationText += `<strong>${index + 1}. ${positionInfo.label}: ${cardName} ${reversalTag}</strong><br>`; interpretationText += `${positionInfo.context} ${cardName}${reversalTag}. `;
+                const positionInfo = getPositionalKeywords(index, spreadIdentifier);
+                const cardName = card.name;
+                const isReversed = card.reversed;
+                const meaningText = isReversed ? card.reversedMeaning : card.meaning;
+                const reversalTag = isReversed ? "(Invertida)" : "";
+                let interpretationText = "";
+
+                // Build text for each card's interpretation block
+                // Using template literals for cleaner string construction
+                interpretationText += `<strong>${index + 1}. ${positionInfo.label}: ${cardName} ${reversalTag}</strong><br>`;
+                interpretationText += `${positionInfo.context} ${cardName}${reversalTag}. `;
+
                 // Translated interpretation phrasing
-                if (isReversed) { interpretationText += `Quando invertida, esta carta frequentemente aponta para desafios internos, atrasos ou os aspectos sombrios relacionados ao seu significado direto. Sugere potenciais dificuldades com ou a necessidade de reavaliar: ${meaningText}`; }
-                else { interpretationText += `Esta carta geralmente significa energias de: ${meaningText}`; }
+                if (isReversed) {
+                    interpretationText += `Quando invertida, esta carta frequentemente aponta para desafios internos, atrasos ou os aspectos sombrios relacionados ao seu significado direto. Sugere potenciais dificuldades com ou a necessidade de reavaliar: ${meaningText}`;
+                } else {
+                    interpretationText += `Esta carta geralmente significa energias de: ${meaningText}`;
+                }
+
+                // Add interpretation block with data attribute for modal linking
                 interpretationHTML += `<div class="card-interpretation" data-card-id="${card.id}" title="Clique para detalhes da carta">${interpretationText}</div>`;
             });
-             // Translated outro
-            interpretationHTML += "<p><em>Lembre-se, o Tarot oferece orientação e perspectiva, não previsões fixas. Reflita sobre como essas energias ressoam com sua própria intuição e situação. Clique em qualquer bloco de interpretação ou imagem da carta para mais detalhes.</em></p>";
-            readingResult.innerHTML = interpretationHTML; setTimeout(() => { readingResult.classList.add('visible'); }, 50); readAgainButton.style.display = 'inline-block';
+
+             // Translated outro/disclaimer
+            interpretationHTML += "<p><em>Lembre-se, o Tarot oferece orientação e perspectiva, não previsões fixas. Reflita sobre como essas energias ressoam com sua própria intuição e situação. Clique em qualquer bloco de interpretação ou imagem da carta virada para mais detalhes.</em></p>";
+
+            // Safely insert the generated HTML
+            readingResult.innerHTML = interpretationHTML;
+            // Use setTimeout to allow the browser to render before adding the class for transition
+            setTimeout(() => {
+                readingResult.classList.add('visible');
+            }, 50); // Small delay
+            readAgainButton.style.display = 'inline-block'; // Show the 'Read Again' button
         }
 
 
         function addModalEventListeners() { /* Adds listeners to open modal */
-            const interpretationDivs = readingResult.querySelectorAll('.card-interpretation'); interpretationDivs.forEach(div => div.addEventListener('click', handleInterpretationClick));
-            const cardElements = readingContainer.querySelectorAll('.card.flipped'); cardElements.forEach(cardEl => cardEl.addEventListener('click', handleInterpretationClick));
+            // Add listeners to the interpretation text blocks
+            const interpretationDivs = readingResult.querySelectorAll('.card-interpretation');
+            interpretationDivs.forEach(div => div.addEventListener('click', handleInterpretationClick));
+
+            // Add listeners to the flipped card images themselves
+            const cardElements = readingContainer.querySelectorAll('.card.flipped'); // Only target flipped cards
+            cardElements.forEach(cardEl => cardEl.addEventListener('click', handleInterpretationClick));
         }
 
         function handleInterpretationClick(event) { /* Opens modal based on clicked element */
-            const targetElement = event.currentTarget; let cardId;
-            if (targetElement.classList.contains('card-interpretation')) { cardId = targetElement.dataset.cardId; } else if (targetElement.classList.contains('card')) { cardId = targetElement.dataset.cardId; }
-            if (cardId) { const cardData = drawnCardsData.find(card => card.id === cardId); if (cardData) { openModal(cardData); } }
+            const targetElement = event.currentTarget; // Use currentTarget to ensure we get the element the listener was attached to
+            let cardId;
+
+            // Determine cardId from the clicked element (either interpretation text or card image)
+            if (targetElement.classList.contains('card-interpretation')) {
+                cardId = targetElement.dataset.cardId;
+            } else if (targetElement.classList.contains('card')) { // Check if it's the .card element itself
+                cardId = targetElement.dataset.cardId;
+            } else {
+                 // If the click was on an element inside the card (like the img), find the parent .card
+                 const parentCard = targetElement.closest('.card');
+                 if (parentCard) {
+                     cardId = parentCard.dataset.cardId;
+                 }
+            }
+
+
+            if (cardId) {
+                // Find the corresponding card data using the ID stored earlier
+                const cardData = drawnCardsData.find(card => card.id === cardId);
+                if (cardData) {
+                    openModal(cardData);
+                } else {
+                     console.error("Could not find card data for ID:", cardId);
+                }
+            }
         }
 
         function resetReading() { /* Resets the UI for a new reading */
-            if (readingInProgress) return; controlsDiv.style.display = 'flex'; readingContainer.innerHTML = ''; readingResult.innerHTML = '';
-            readingResult.classList.remove('visible'); readAgainButton.style.display = 'none'; questionInput.value = ''; drawnCardsData = [];
+            if (readingInProgress) return; // Prevent reset during animations
+
+            controlsDiv.style.display = 'flex'; // Show controls
+            readingContainer.innerHTML = ''; // Clear drawn cards
+            readingResult.innerHTML = ''; // Clear interpretation results
+            readingResult.classList.remove('visible'); // Hide results area
+            readAgainButton.style.display = 'none'; // Hide 'Read Again' button
+            questionInput.value = ''; // Clear question input
+            drawnCardsData = []; // Clear the array of drawn card data
+            // Ensure click listener is removed if reset happens before all cards were flipped
+            readingContainer.removeEventListener('click', handleCardClick);
         }
 
         // --- Modal Functions ---
         function openModal(cardData) { /* Populates and shows the modal */
-            modalCardName.textContent = cardData.name; const placeholderBg = getComputedStyle(document.documentElement).getPropertyValue('--card-back-color').substring(1); const placeholderText = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').substring(1);
-            // Translated placeholder text
-            const imgSrc = cardData.image.startsWith('URL_') ? `https://via.placeholder.com/160x260/${placeholderBg}/${placeholderText}?text=${cardData.name.replace(/\s+/g, '+')}` : cardData.image;
-            modalCardImage.src = imgSrc; modalCardImage.onerror = () => { modalCardImage.src = `https://via.placeholder.com/160x260/FF0000/FFFFFF?text=Erro+ao+Carregar`; };
-            // Ensure modal text elements are updated (they get their text from cardData which is translated)
-            modalCardMeaning.textContent = cardData.meaning;
-            modalCardReversed.textContent = cardData.reversedMeaning;
-            modal.style.display = "block"; modalCloseButton.focus();
+            modalCardName.textContent = cardData.name;
+
+            const placeholderBg = getComputedStyle(document.documentElement).getPropertyValue('--card-back-color').trim().substring(1);
+            const placeholderText = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim().substring(1);
+             // Translated placeholder text, URL encoding the name
+            const encodedName = encodeURIComponent(cardData.name);
+            const imgSrc = cardData.image.startsWith('URL_')
+                ? `https://via.placeholder.com/160x260/${placeholderBg}/${placeholderText}?text=${encodedName}`
+                : cardData.image;
+
+            modalCardImage.src = imgSrc;
+            // Set error handler specifically for modal image
+            modalCardImage.onerror = () => {
+                 modalCardImage.src = `https://via.placeholder.com/160x260/FF0000/FFFFFF?text=Erro`;
+                 console.error(`Failed to load modal image for ${cardData.name}: ${cardData.image}`);
+            };
+            // Alt text for accessibility
+             modalCardImage.alt = cardData.name;
+
+            // Ensure modal text elements are updated (they get their text from cardData which is already translated)
+            modalCardMeaning.textContent = cardData.meaning; // Upright meaning
+            modalCardReversed.textContent = cardData.reversedMeaning; // Reversed meaning
+
+            modal.style.display = "block"; // Show the modal
+            modalCloseButton.focus(); // Set focus to the close button for accessibility
         }
-        function closeModal() { /* Hides the modal */ modal.style.display = "none"; }
+
+        function closeModal() { /* Hides the modal */
+             modal.style.display = "none"; // Hide the modal
+        }
 
     </script>
