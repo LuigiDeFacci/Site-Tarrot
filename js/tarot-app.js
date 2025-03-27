@@ -1,5 +1,4 @@
- <!-- Tarot App JavaScript - ONLY on this page -->
-    <script>
+
         // --- Card Data (Meanings translated to pt-BR - REVIEW RECOMMENDED) ---
         // IMPORTANT: Replace 'URL_...' with actual image URLs
         const cards = [
@@ -412,4 +411,3 @@
              modal.style.display = "none"; // Hide the modal
         }
 
-    </script>
