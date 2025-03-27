@@ -2,27 +2,17 @@
     <div class="header-container">
 
         <div class="site-branding">
-            {% comment %} Optional: You could add a small mystical icon/logo here {% endcomment %}
-            {% comment %} <img src="/assets/images/logo-icon.svg" alt="" class="site-icon"> {% endcomment %}
+            {% comment %} Optional: Add logo etc. here {% endcomment %}
             <h1 class="site-title">
                 <a href="{{ '/' | relative_url }}">
                     {{ site.title | default: "Sussurros do Destino" }}
                 </a>
             </h1>
-            {% comment %} Optional: Add a tagline if you like {% endcomment %}
-            {% comment %} <p class="site-tagline">Seu guia intuitivo</p> {% endcomment %}
         </div>
 
-        {% comment %} Button for Mobile Navigation Toggle {% endcomment %}
-        <button class="nav-toggle" aria-label="Toggle Navigation" aria-expanded="false" aria-controls="main-navigation">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
 
         <nav class="main-nav" id="main-navigation" role="navigation" aria-label="Main navigation">
             <ul>
-                {% comment %} Use page.url directly for comparison in Jekyll {% endcomment %}
                 <li><a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>Início</a></li>
                 <li><a href="{{ '/about.html' | relative_url }}" {% if page.url == '/about.html' %}class="active"{% endif %}>Sobre</a></li>
                 <li><a href="{{ '/articles.html' | relative_url }}" {% if page.url == '/articles.html' %}class="active"{% endif %}>Artigos</a></li>

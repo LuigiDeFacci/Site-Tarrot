@@ -5,6 +5,7 @@
   --bg-color: #0a0a14; /* Even deeper base */
   --text-color: #e8e8e8; /* Slightly brighter text */
   --accent-color: #b0a3d7; /* Slightly adjusted purple */
+  --accent-hover: #c0b3e7; /* Lighter purple for hover - ADJUST AS NEEDED */
   --soft-glow-color: rgba(176, 163, 215, 0.15); /* Soft purple glow */
   --card-back-color: #1f1f3a; /* Darker card back */
   --card-border-color: rgba(176, 163, 215, 0.25);
@@ -62,7 +63,7 @@ a {
     transition: color 0.3s ease;
 }
 a:hover {
-    color: #fff;
+    color: #fff; /* Keep general link hover white, nav is specific */
 }
 
 img {
@@ -70,75 +71,138 @@ img {
     height: auto;
 }
 
-/* === Header & Navigation (MODERNIZED LAYOUT) === */
+/* === Header & Navigation (No Toggle) === */
 
 .site-header {
     background-color: var(--header-footer-bg);
-    padding: 20px 15px; /* Default padding */
-    display: flex;
-    flex-direction: column; /* Stack title and nav VERTICALLY by default */
-    align-items: center; /* Center items HORIZONTALLY */
-    gap: 15px; /* Space between title and nav */
+    color: var(--text-color);
+    padding: 1rem 0; /* Default vertical padding */
     border-bottom: 1px solid var(--card-border-color);
-    position: sticky;
+    position: sticky; /* Keep sticky header */
     top: 0;
     z-index: 100;
-    backdrop-filter: blur(5px);
-    text-align: center;
+    backdrop-filter: blur(5px); /* Keep blur effect */
+}
+
+.header-container {
+    max-width: 1100px; /* Match main content max-width */
+    margin: 0 auto;
+    padding: 0 20px; /* Side padding */
+    display: flex;
+    justify-content: space-between; /* Space title and nav */
+    align-items: center;
+    flex-wrap: wrap; /* Allow wrapping */
+}
+
+/* --- Site Branding (Title) --- */
+.site-branding {
+   /* Allow branding to take natural space */
+   /* Removed flex-grow: 1 to help centering on wrap */
 }
 
 .site-title {
-    font-family: 'Cinzel', serif;
-    font-size: 2em;
-    color: var(--accent-color);
     margin: 0;
-    text-shadow: 1px 1px 3px var(--shadow-color);
+    font-size: 1.8em; /* Adjust size */
+    font-family: 'Cinzel', serif; /* Use your title font */
+    font-weight: 500; /* Adjust weight if needed */
+    text-shadow: 1px 1px 3px var(--shadow-color); /* Keep text shadow */
 }
+
 .site-title a {
-    color: inherit;
+    color: var(--accent-color); /* Use your accent color for title link */
     text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.site-title a:hover,
+.site-title a:focus {
+    color: var(--accent-hover);
+}
+
+/* --- Navigation --- */
+.main-nav {
+   /* Needs to take full width when wrapping */
 }
 
 .main-nav ul {
     list-style: none;
-    padding: 0;
     margin: 0;
-    display: flex;
-    justify-content: center; /* Center nav items horizontally */
-    flex-wrap: wrap; /* Allow wrapping on small screens */
-    gap: 20px; /* Gap between nav items */
+    padding: 0;
+    display: flex; /* Still use flex for horizontal layout */
+    flex-wrap: wrap; /* Allow items to wrap */
+    justify-content: center; /* Center items horizontally */
+    align-items: center;
+    gap: 1.5rem; /* Space between items */
 }
+
+/* No margin needed if using gap */
+/* .main-nav li:first-child { margin-left: 0; } */
 
 .main-nav a {
     color: var(--text-color);
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 0.9em;
-    padding: 5px 0;
+    text-decoration: none;
+    font-family: 'Raleway', sans-serif; /* Use your body/nav font */
+    font-size: 0.9em; /* Adjust as needed */
+    font-weight: bold; /* Keep bold nav text */
+    text-transform: uppercase; /* Keep uppercase */
+    letter-spacing: 1px; /* Keep letter spacing */
+    padding: 0.5rem 0; /* Padding for easier clicking */
     position: relative;
+    transition: color 0.3s ease;
     white-space: nowrap;
 }
-/* Underline effect expanding from center */
+
+/* Mystical Hover Effect - Subtle Underline */
 .main-nav a::after {
     content: '';
     position: absolute;
-    bottom: -3px;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: -2px; /* Adjust position slightly */
+    left: 0;
     width: 0;
-    height: 2px;
+    height: 1px; /* Subtle line */
     background-color: var(--accent-color);
-    transition: width 0.3s ease;
+    transition: width 0.4s ease;
 }
+
 .main-nav a:hover::after,
+.main-nav a:focus::after,
 .main-nav a.active::after {
-    width: 100%;
+    width: 100%; /* Expand underline on hover/focus/active */
+}
+
+.main-nav a:hover,
+.main-nav a:focus,
+.main-nav a.active {
+    color: var(--accent-hover); /* Highlight color */
+}
+
+
+/* --- Header Responsive (No Toggle) --- */
+@media (max-width: 768px) {
+    .header-container {
+        justify-content: center; /* Center branding and nav when stacked */
+        gap: 0.5rem; /* Reduce gap when stacked */
+    }
+
+    .site-branding {
+       width: 100%; /* Make branding take full width */
+       text-align: center; /* Center the title text */
+    }
+
+    .main-nav {
+        width: 100%; /* Ensure nav takes full width */
+        margin-top: 0.5rem; /* Add a bit of space below title */
+    }
+
+    .main-nav ul {
+        justify-content: center; /* Ensure items remain centered */
+        gap: 1rem 1.5rem; /* Adjust vertical and horizontal gap */
+    }
 }
 
 
 /* === Main Content Area === */
-
+/* (Keep existing styles) */
 main {
     padding: 40px 20px;
     max-width: 1100px;
@@ -174,7 +238,7 @@ main section {
 }
 
 /* === Footer === */
-
+/* (Keep existing styles) */
 .site-footer {
     background-color: var(--header-footer-bg);
     padding: 20px 30px;
@@ -187,8 +251,7 @@ main section {
 }
 
 /* === TAROT APP SPECIFIC STYLES === */
-/* Scoped to #tarot-app-page */
-
+/* (Keep existing styles) */
 #tarot-app-page h1 {
     margin-bottom: 30px;
 }
@@ -287,7 +350,7 @@ main section {
 }
 
 /* === Modal Styles === */
-/* (Generally apply anywhere) */
+/* (Keep existing styles) */
 .modal {
     display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
     overflow: auto; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(6px);
@@ -314,38 +377,16 @@ main section {
 
 /* === Responsive Adjustments === */
 
-/* Desktop Header Layout Override */
-@media (min-width: 800px) {
-    .site-header {
-        flex-direction: row;
-        justify-content: space-between;
-        padding: 15px 30px;
-        gap: 30px;
-    }
-    .site-title {
-        font-size: 1.8em;
-        text-align: left; /* Align title left on desktop */
-    }
-    .main-nav ul {
-        gap: 25px;
-    }
-}
-
 /* Tablet Adjustments */
 @media (max-width: 960px) {
-    /* Keep default stacked header, adjust Tarot controls if needed */
+    /* Tarot controls adjustments */
     #tarot-app-page #controls > div { width: calc(50% - 10px); }
     #tarot-app-page #controls > button { width: 100%; margin-top: 10px; }
 }
 
 /* Smaller Tablet / Large Phone Adjustments */
 @media (max-width: 768px) {
-    /* Header already stacked, adjust padding/font */
-    .site-header { padding: 15px 15px; }
-    .site-title { font-size: 1.6em; }
-    .main-nav ul { gap: 15px; }
-    .main-nav a { font-size: 0.85em;}
-
+    /* General adjustments */
     main { padding: 25px 15px; }
     main h1, #tarot-app-page h1 { font-size: 2.2em; }
 
@@ -357,6 +398,7 @@ main section {
     #tarot-app-page #reading-result h2 { font-size: 1.5em; }
     #tarot-app-page button { padding: 12px 24px; font-size: 1em; }
 
+    /* Modal adjustments */
     .modal-content { margin: 15% auto; width: 90%; padding: 25px; }
     .modal-content img { max-width: 120px; margin-right: 20px; }
     .modal-content h3 { font-size: 1.4em; }
@@ -364,14 +406,15 @@ main section {
 
 /* Small Phone Adjustments */
 @media (max-width: 480px) {
-    .site-header { padding: 15px 10px; } /* Less padding */
-    .site-title { font-size: 1.5em; }
-    .main-nav ul { gap: 10px; } /* Smaller gap */
-    .main-nav a { font-size: 0.8em; }
-
+    /* General adjustments */
     main { padding: 20px 10px; }
     main h1, #tarot-app-page h1 { font-size: 1.8em; }
 
+    /* Header adjusts slightly */
+    .header-container { padding: 0 15px; } /* Adjust side padding */
+    .main-nav ul { gap: 0.5rem 1rem; } /* Reduce gap further */
+
+    /* Tarot controls adjustments */
     #tarot-app-page #controls { padding: 15px; gap: 15px; }
     #tarot-app-page #controls > button { width: 100%; } /* Full width button */
     #tarot-app-page .card-placeholder { width: 110px; height: 185px; margin: 10px; }
@@ -382,8 +425,9 @@ main section {
     #tarot-app-page button { font-size: 0.9em; padding: 10px 18px;}
     #tarot-app-page #read-again-button { margin-top: 25px; }
 
+    /* Modal adjustments */
     .modal-content { width: 95%; margin: 12% auto; padding: 20px;}
-    .modal-content img { float: none; max-width: 100px; margin: 0 auto 15px auto; }
+    .modal-content img { float: none; max-width: 100px; margin: 0 auto 15px auto; display: block; } /* Center image */
     .modal-content h3 { font-size: 1.2em; }
     .modal-content p { font-size: 0.9em; line-height: 1.6; }
 }
