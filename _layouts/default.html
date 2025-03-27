@@ -1,38 +1,32 @@
 <!DOCTYPE html>
-<html lang="{{ page.lang | default: site.lang | default: 'pt-BR' }}"> <!-- Added lang flexibilit -->
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Use page title from Front Matter, fallback to site title -->
+    <title>{{ page.title | default: site.title | default: "Sussurros do Destino" }}</title>
 
-    <!-- SEO Title - More robust -->
-    {% if page.title %}
-      <title>{{ page.title }} | {{ site.title | default: "Sussurros do Destino" }}</title>
-    {% else %}
-      <title>{{ site.title | default: "Sussurros do Destino" }}</title>
-    {% endif %}
-
-    <!-- Include SEO tags if using the plugin -->
-    {% seo title=false %} <!-- Tells jekyll-seo-tag not to output its own title tag -->
-
-    <!-- CSS Link - Ensure correct path relative to site root -->
-    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
-    <!-- Assuming your CSS is in /assets/css/style.css - ADJUST IF DIFFERENT -->
+    <!-- Using your original CSS path -->
+    <link rel="stylesheet" href="{{ '/css/style.css' | relative_url }}">
 
     <!-- Add other head elements if needed -->
-
 </head>
 <body>
+
     {% include header.html %}
 
-    <main class="page-content" aria-label="Content" {% if page.id %}id="{{ page.id }}"{% endif %}>
-       <div class="wrapper"> <!-- Add wrapper consistent with theme? Check theme's default.html -->
-          {{ content }}  <!-- ****** THIS IS THE FIX ****** -->
-       </div>
+    <!-- The main content area -->
+    <main {% if page.id %}id="{{ page.id }}"{% endif %}>
+
+      <!-- ****** THE CRUCIAL FIX IS HERE ****** -->
+      <!-- This inserts the content from your markdown files (index.md, about.md, etc.) -->
+      {{ content }}
+
     </main>
 
     {% include footer.html %}
 
     <!-- Include global JS if any, app-specific JS goes in page files -->
-    <!-- Example: <script src="{{ '/assets/js/main.js' | relative_url }}"></script> -->
+
 </body>
 </html>
