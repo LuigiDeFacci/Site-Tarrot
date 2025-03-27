@@ -1,24 +1,35 @@
+<!-- Alternative: Keep the wrapper if needed by theme CSS -->
+<!-- Inside YourProject/_includes/header.html -->
 <header class="site-header" role="banner">
-    <div class="header-container">
+  <div class="wrapper"> {/* Keep this wrapper from the theme's original */}
+
+    <div class="header-container"> {/* Our inner container for flexbox */}
 
         <div class="site-branding">
-            {% comment %} Optional: Add logo etc. here {% endcomment %}
             <h1 class="site-title">
-                <a href="{{ '/' | relative_url }}">
+                <a href="{{ '/' | relative_url }}" rel="author"> {/* Added rel="author" like theme */}
                     {{ site.title | default: "Sussurros do Destino" }}
                 </a>
             </h1>
         </div>
 
-
         <nav class="main-nav" id="main-navigation" role="navigation" aria-label="Main navigation">
+             {/* Use page_paths logic like minima theme for better baseurl handling */}
+            {%- assign default_paths = site.pages | map: "path" -%}
+            {%- assign page_paths = site.header_pages | default: default_paths -%}
             <ul>
-                <li><a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>Início</a></li>
-                <li><a href="{{ '/about.html' | relative_url }}" {% if page.url == '/about.html' %}class="active"{% endif %}>Sobre</a></li>
-                <li><a href="{{ '/articles.html' | relative_url }}" {% if page.url == '/articles.html' %}class="active"{% endif %}>Artigos</a></li>
-                <li><a href="{{ '/tarot.html' | relative_url }}" {% if page.url == '/tarot.html' %}class="active"{% endif %}>Leitura de Tarot</a></li>
-            </ul>
+            {%- if page_paths -%}
+                {%- for path in page_paths -%}
+                {%- assign my_page = site.pages | where: "path", path | first -%}
+                {%- if my_page.title -%}
+                <li><a class="page-link" href="{{ my_page.url | relative_url }}" {% if page.url == my_page.url %}class="active"{% endif %}>{{ my_page.title | escape }}</a></li>
+                {%- endif -%}
+                {%- endfor -%}
+            {%- endif -%}
+             </ul>
         </nav>
 
-    </div>
+    </div> {/* End of header-container */}
+
+  </div> {/* End of wrapper */}
 </header>
