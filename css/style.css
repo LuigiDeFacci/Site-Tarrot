@@ -334,48 +334,11 @@ main section {
 }
 
 #tarot-app-page #controls {
-    background-color: rgba(0,0,0,0.35);
-    padding: 25px;
-    border-radius: 12px;
-    margin-bottom: 40px;
-    border: 1px solid var(--card-border-color);
-    max-width: 900px;
-    width: 100%;
-    /* --- Flexbox setup for the main container --- */
-    display: flex;
-    flex-wrap: wrap; /* Allow items to wrap to new lines */
-    justify-content: center; /* Center items horizontally overall */
-    /* Gap between rows AND columns */
-    gap: 20px 25px; /* vertical gap | horizontal gap */
+    background-color: rgba(0,0,0,0.35); padding: 25px; border-radius: 12px;
+    margin-bottom: 40px; display: flex; flex-wrap: wrap; justify-content: center;
+    align-items: center; gap: 25px; border: 1px solid var(--card-border-color);
+    max-width: 900px; width: 100%;
 }
-
-/* Style for the input/select groups */
-#tarot-app-page #controls .input-group {
-    display: flex;
-    flex-direction: column; /* Stack label above input/select */
-    align-items: flex-start; /* Align items left within the group */
-    gap: 5px; /* Space between label and input */
-    flex-grow: 1; /* Allow these groups to grow and fill space */
-    flex-basis: 250px; /* Give them a base size before growing/shrinking */
-    min-width: 200px; /* Prevent getting too squished */
-}
-#tarot-app-page #controls .input-group label {
-    margin: 0; /* Reset margin */
-    font-weight: bold;
-    flex-shrink: 0; /* Prevent label shrinking */
-}
-#tarot-app-page #controls .input-group select,
-#tarot-app-page #controls .input-group input[type="text"] {
-    padding: 10px 14px;
-    border-radius: 6px;
-    border: 1px solid var(--accent-color);
-    background-color: var(--card-back-color);
-    color: var(--text-color);
-    font-family: 'Raleway', sans-serif;
-    font-size: 1em;
-    width: 100%; /* Make input/select fill its group container */
-}
-
 #tarot-app-page #controls label { margin-right: 8px; font-weight: bold; flex-shrink: 0; }
 #tarot-app-page #controls select,
 #tarot-app-page #controls input[type="text"] {
@@ -393,44 +356,44 @@ main section {
 
 /* Optional: Style for grouping action buttons */
 #tarot-app-page #controls .action-buttons {
-    display: flex;
-    flex-wrap: wrap; /* Allow buttons to wrap on very small screens */
-    gap: 15px; /* Space between buttons */
-    justify-content: center; /* Center buttons within the group */
-    width: 100%; /* Make button group take full width */
-    order: 4; /* Optional: Force it below checkbox */
-    margin-top: 10px; /* Add space above the buttons */
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping on small screens */
+  gap: 15px; /* Space between buttons */
+  justify-content: center; /* Center buttons if they wrap */
+  width: 100%; /* Take full width to help with centering */
+  margin-top: 10px; /* Add some space above */
 }
 
-/* Individual button styles (inherited from previous button rule) */
+/* Adjust individual button styles if necessary within the group */
 #tarot-app-page #controls .action-buttons button {
-     flex-grow: 0; /* Prevent buttons from stretching */
-     /* Inherits styles from #tarot-app-page button */
+  /* Example: Ensure buttons don't grow excessively */
+   flex-grow: 0;
 }
 
 /* Style for the reversal checkbox within controls */
 #tarot-app-page #controls .checkbox-control {
-    display: flex;
-    align-items: center; /* Vertically center checkbox and label */
-    gap: 8px;
-    width: 100%; /* Make checkbox group take full width */
-    justify-content: center; /* Center the items within this group */
-    order: 3; /* Optional: Force it below inputs if wrapping occurs early */
-    margin-top: 5px; /* Add a little space above if it wraps */
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between checkbox and label */
+  flex-shrink: 0; /* Prevent shrinking */
+  margin: 5px 0; /* Add some vertical spacing */
 }
+
 #tarot-app-page #controls .checkbox-control input[type="checkbox"] {
-    margin: 0;
-    width: 1.1em;
-    height: 1.1em;
-    cursor: pointer;
-    flex-shrink: 0;
+  /* Optional: Style the checkbox itself */
+  margin: 0; /* Remove default margin */
+  width: 1.1em; /* Adjust size */
+  height: 1.1em;
+  cursor: pointer;
 }
 
 #tarot-app-page #controls .checkbox-control label {
-    margin: 0;
-    cursor: pointer;
-    font-weight: normal;
+  /* Ensure label doesn't have extra margin causing misalignment */
+  margin: 0;
+  cursor: pointer;
+  font-weight: normal; /* Override potential bold from general label style */
 }
+
 /* Card Placeholder - Defines the size and spacing */
 #tarot-app-page .card-placeholder {
     width: 180px; height: 300px; margin: 20px; position: relative;
