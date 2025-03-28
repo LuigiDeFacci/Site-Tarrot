@@ -354,22 +354,6 @@ main section {
     width: 100%; padding: 10px;
 }
 
-/* Optional: Style for grouping action buttons */
-#tarot-app-page #controls .action-buttons {
-  display: flex;
-  flex-wrap: wrap; /* Allow wrapping on small screens */
-  gap: 15px; /* Space between buttons */
-  justify-content: center; /* Center buttons if they wrap */
-  width: 100%; /* Take full width to help with centering */
-  margin-top: 10px; /* Add some space above */
-}
-
-/* Adjust individual button styles if necessary within the group */
-#tarot-app-page #controls .action-buttons button {
-  /* Example: Ensure buttons don't grow excessively */
-   flex-grow: 0;
-}
-
 /* Style for the reversal checkbox within controls */
 #tarot-app-page #controls .checkbox-control {
   display: flex;

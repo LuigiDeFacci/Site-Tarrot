@@ -106,8 +106,6 @@ const modalCardImage = document.getElementById('modal-card-image');
 const modalCardMeaning = document.getElementById('modal-card-meaning');
 const modalCardReversed = document.getElementById('modal-card-reversed');
 const includeReversalsCheckbox = document.getElementById('include-reversals');
-const cardOfDayButton = document.getElementById('card-of-day-button');
-
 
 let drawnCardsData = [];
 let readingInProgress = false;
@@ -115,7 +113,6 @@ let readingInProgress = false;
 // --- Event Listeners ---
 // Make sure these elements exist in your HTML when the script runs
 if (startReadingButton) { startReadingButton.addEventListener('click', startReading); }
-if (cardOfDayButton) { cardOfDayButton.addEventListener('click', getCardOfDay); }
 if (readAgainButton) { readAgainButton.addEventListener('click', resetReading); }
 if (modalCloseButton) { modalCloseButton.addEventListener('click', closeModal); }
 window.addEventListener('click', (event) => { if (modal && event.target === modal) closeModal(); });
@@ -206,55 +203,6 @@ function startReading() {
     }
 }
 
-function getCardOfDay() {
-    // Prevent running if another reading is in progress or elements missing
-    if (readingInProgress) {
-        console.log("Reading in progress, skipping Card of the Day.");
-        // Optionally show a brief message to the user
-        // alert("Aguarde a leitura atual terminar.");
-        return;
-    }
-     if (!includeReversalsCheckbox || !modal) { // Check necessary elements
-        console.error("Cannot get Card of the Day: Missing required elements (checkbox or modal).");
-        return;
-     }
-
-    readingInProgress = true; // Briefly set flag to prevent immediate overlap
-    console.log("Getting Card of the Day...");
-
-    try {
-        // 1. Shuffle Deck
-        let shuffledDeck = [...cards];
-        shuffle(shuffledDeck);
-
-        // 2. Draw One Card
-        const drawnCard = shuffledDeck[0];
-
-        // 3. Determine Reversal (using the checkbox)
-        const allowReversals = includeReversalsCheckbox.checked;
-        const isReversed = allowReversals && Math.random() < 0.3; // Same logic as startReading
-
-        // 4. Prepare Data for Modal (including reversal status)
-        const cardDataWithReversal = {
-            ...drawnCard, // Copy all properties from the drawn card
-            reversed: isReversed // Add the calculated reversal status
-        };
-
-        console.log("Card of the Day:", cardDataWithReversal.name, "(Reversed:", isReversed, ")");
-
-        // 5. Display in Modal
-        openModal(cardDataWithReversal);
-
-    } catch (error) {
-        console.error("Error getting Card of the Day:", error);
-        // Optionally display an error message to the user
-        alert("Ocorreu um erro ao buscar a Carta do Dia.");
-    } finally {
-        // Reset flag quickly after modal is called
-         readingInProgress = false;
-         console.log("Card of the Day action finished, readingInProgress set to false.");
-    }
-}
 
 // Add similar console logs and checks to other functions if needed
 
