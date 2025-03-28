@@ -403,9 +403,11 @@ main section {
 }
 /* The front face - hidden initially */
 #tarot-app-page .card-front {
-    background-color: var(--card-back-color);
+    background-color: var(--card-back-color); /* Use card back color or #000 */
     border: 1px solid var(--card-border-color);
-    transform: rotateY(180deg); /* Start rotated 180deg to be hidden */
+    transform: rotateY(180deg);
+    position: relative;
+    overflow: hidden;
 }
 
 /* *** Image Sizing *** */
@@ -413,9 +415,12 @@ main section {
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    /* CHANGE THIS LINE: */
+    object-fit: contain;  /* Scale to fit *inside*, don't crop */
     border-radius: inherit;
-    /* No position:absolute needed if only child */
+    position: absolute; /* Keep positioning */
+    top: 0;
+    left: 0;
 }
 
 /* Rotation applied to the whole card when JS adds '.flipped' */
