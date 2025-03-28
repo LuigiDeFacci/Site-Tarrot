@@ -20,6 +20,12 @@ id: tarot-app-page # Add ID for CSS scoping
         <label for="question-input">Sua Pergunta (opcional):</label>
         <input type="text" id="question-input" placeholder="Concentre sua intenção...">
     </div>
+
+<div class="checkbox-control">
+  <input type="checkbox" id="include-reversals" checked>
+  <label for="include-reversals">Incluir Cartas Invertidas</label>
+</div>
+<!-- *** END OF ADDED CHECKBOX *** -->
     <button id="start-reading-button">Embaralhar e Ler</button>
 </div>
 
@@ -53,4 +59,4 @@ id: tarot-app-page # Add ID for CSS scoping
 
 <!-- Link the Tarot App JavaScript ONLY on this page -->
 <!-- IMPORTANT: Make sure the path is correct relative to the root -->
-<script src="{{ '/js/tarot-app.js' | relative_url }}"></script>
+<script src="{{ '/js/tarot-app.js' | relative_url }}" defer></script>

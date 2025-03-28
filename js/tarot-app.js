@@ -11,7 +11,7 @@ const cards = [
     { name: "O Hierofante", image: "images/cartas/ohierofante.png", meaning: "Tradição, instituições, conformidade, moralidade, orientação espiritual, educação.", reversedMeaning: "Rebelião, desafiar normas, não convencionalidade, novos paradigmas, liberdade." },
     { name: "Os Amantes", image: "images/cartas/osamantes.png", meaning: "Amor, harmonia, relacionamentos, escolhas, alinhamento, união, valores.", reversedMeaning: "Desarmonia, desequilíbrio, conflito, más escolhas, desalinhamento, indecisão." },
     { name: "O Carro", image: "images/cartas/ocarro.png", meaning: "Força de vontade, controle, vitória, determinação, ambição, direção, foco.", reversedMeaning: "Falta de controle, oposição, sem direção, agressão, desistência, energia dispersa." },
-    { name: "A Justiça", image: "images/cartas/ajustica.png", meaning: "Justiça, verdade, causa e efeito, lei, clareza, responsabilidade, equilíbrio.", reversedMeaning: "Injustiça, desonestidade, falta de responsabilidade, parcialidade, emaranhados legais, desequilíbrio." },
+    { name: "A Justiça", image: "images/cartas/justica.png", meaning: "Justiça, verdade, causa e efeito, lei, clareza, responsabilidade, equilíbrio.", reversedMeaning: "Injustiça, desonestidade, falta de responsabilidade, parcialidade, emaranhados legais, desequilíbrio." },
     { name: "O Eremita", image: "images/cartas/oeremita.png", meaning: "Introspecção, solidão, orientação, sabedoria, busca da alma, retirada para insight.", reversedMeaning: "Isolamento, solidão, retraimento, paranoia, tornar-se antissocial, rejeição." },
     { name: "A Roda da Fortuna", image: "images/cartas/arodadafortuna.png", meaning: "Destino, ciclos, sorte, mudança, pontos de virada, destino, carma.", reversedMeaning: "Má sorte, resistência à mudança, quebra de ciclos, infortúnio, contratempos imprevistos." },
     { name: "A Força", image: "images/cartas/aforca.png", meaning: "Coragem, compaixão, força interior, paciência, influência, controle, domar a fera.", reversedMeaning: "Fraqueza, insegurança, falta de disciplina, emoção crua, vulnerabilidade, ceder." },
@@ -105,6 +105,7 @@ const modalCardName = document.getElementById('modal-card-name');
 const modalCardImage = document.getElementById('modal-card-image');
 const modalCardMeaning = document.getElementById('modal-card-meaning');
 const modalCardReversed = document.getElementById('modal-card-reversed');
+const includeReversalsCheckbox = document.getElementById('include-reversals');
 
 let drawnCardsData = [];
 let readingInProgress = false;
@@ -124,95 +125,84 @@ function shuffle(array) { /* Fisher-Yates Shuffle */
 
 // --- UPDATED startReading Function ---
 function startReading() {
-    // Check if already running
     if (readingInProgress) {
         console.log("Reading already in progress, skipping.");
         return;
     }
-    readingInProgress = true; // Set flag immediately
+    readingInProgress = true;
+    console.log("Starting new reading...");
 
-    console.log("Starting new reading..."); // Debug log
-
-    // Wrap core logic in try...finally to ensure flag is reset
     try {
-        // Check if required elements exist at the start of the function
-        if (!controlsDiv || !readingResult || !readingContainer || !readAgainButton || !spreadSelect) {
+        // Check includes the new checkbox reference
+        if (!controlsDiv || !readingResult || !readingContainer || !readAgainButton || !spreadSelect || !includeReversalsCheckbox) { // Added checkbox check
             console.error("Cannot start reading: One or more essential DOM elements not found!");
-            // No need to reset readingInProgress here, finally block handles it
-            return; // Exit if elements are missing
+            return;
         }
 
         controlsDiv.style.display = 'none';
         readingResult.innerHTML = '';
         readingResult.classList.remove('visible');
-        readingContainer.innerHTML = ''; // Clear previous cards
+        readingContainer.innerHTML = '';
         drawnCardsData = [];
         readAgainButton.style.display = 'none';
 
         const spreadIdentifier = spreadSelect.value;
         let numberOfCards;
+        console.log("Selected Spread:", spreadIdentifier);
 
-        console.log("Selected Spread:", spreadIdentifier); // Debug log
+        // --- Get the state of the reversals checkbox ---
+        const allowReversals = includeReversalsCheckbox.checked;
+        console.log("Allow Reversals:", allowReversals); // Debug log
+        // --- End of getting checkbox state ---
 
         if (spreadIdentifier === 'love5') { numberOfCards = 5; }
         else if (spreadIdentifier === 'celtic10') { numberOfCards = 10; }
         else { numberOfCards = parseInt(spreadIdentifier); }
 
         if (isNaN(numberOfCards) || numberOfCards <= 0 || numberOfCards > cards.length) {
-            console.error("Invalid number of cards selected or spread identifier unknown:", spreadIdentifier, numberOfCards);
-            if (controlsDiv) controlsDiv.style.display = 'flex'; // Show controls again on input error
-            // No need to reset readingInProgress here, finally block handles it
-            return; // Exit on invalid input
+            console.error("Invalid number of cards selected:", spreadIdentifier, numberOfCards);
+            if (controlsDiv) controlsDiv.style.display = 'flex';
+            return;
         }
-
-        console.log("Number of cards:", numberOfCards); // Debug log
+        console.log("Number of cards:", numberOfCards);
 
         let shuffledDeck = [...cards];
         shuffle(shuffledDeck);
         const spread = shuffledDeck.slice(0, numberOfCards);
-
-        console.log("Dealing cards..."); // Debug log
+        console.log("Dealing cards...");
 
         spread.forEach((cardData, index) => {
-            const isReversed = Math.random() < 0.3;
+            // --- Determine if reversed based on checkbox ---
+            const isReversed = allowReversals && Math.random() < 0.3; // Only reverse if allowed AND random check passes (30% chance)
+            // --- End of reversal check ---
+
             drawnCardsData.push({ ...cardData, reversed: isReversed, id: `card-${index}`, spread: spreadIdentifier });
-            // Add a check within createCardElement too, but log if it might fail
-            if (!readingContainer) {
-                 console.error("readingContainer not found before calling createCardElement for card", index);
-                 // Optionally throw an error or handle differently
-            }
+            if (!readingContainer) { console.error("readingContainer not found before creating card", index); }
             createCardElement(cardData, index, isReversed);
         });
 
-        // Delay enabling clicks
         setTimeout(() => {
             if (readingContainer) {
                 readingContainer.addEventListener('click', handleCardClick);
-                console.log("Card click listener added."); // Debug log
+                console.log("Card click listener added.");
             } else {
                  console.error("readingContainer not found when trying to add click listener.");
             }
-            // IMPORTANT: Only set readingInProgress to false *after* setup is complete
-            // readingInProgress = false; // MOVED THIS to the finally block below
         }, numberOfCards * 150 + 100);
 
     } catch (error) {
         console.error("Error during startReading:", error);
-        // Attempt to reset UI elements in case of error
         if (controlsDiv) controlsDiv.style.display = 'flex';
         if (readingContainer) readingContainer.innerHTML = '<p style="color: red;">Ocorreu um erro ao iniciar a leitura.</p>';
-        // readingInProgress will be reset by the finally block
 
     } finally {
-        // CRITICAL: Ensure readingInProgress is reset regardless of success or failure,
-        // but delay it slightly to allow the initial click protection to work fully
-        // and prevent immediate re-clicks if setup was fast.
         setTimeout(() => {
              readingInProgress = false;
-             console.log("readingInProgress set to false."); // Debug log
-        }, 100); // Short delay
+             console.log("readingInProgress set to false.");
+        }, 100);
     }
 }
+
 
 // Add similar console logs and checks to other functions if needed
 
@@ -230,7 +220,7 @@ function createCardElement(cardData, index, isReversed) { /* Creates HTML for ea
     img.onerror = () => { img.src = `https://via.placeholder.com/180x300/FF0000/FFFFFF?text=Erro+ao+Carregar`; console.error(`Failed to load image for ${cardData.name}`); };
     cardFront.appendChild(img); cardElement.appendChild(cardBack); cardElement.appendChild(cardFront); placeholder.appendChild(cardElement); readingContainer.appendChild(placeholder);
 }
-        
+
 function handleCardClick(event) {
     if (readingInProgress || !readingContainer) return;
 

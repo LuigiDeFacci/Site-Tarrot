@@ -354,6 +354,30 @@ main section {
     width: 100%; padding: 10px;
 }
 
+/* Style for the reversal checkbox within controls */
+#tarot-app-page #controls .checkbox-control {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between checkbox and label */
+  flex-shrink: 0; /* Prevent shrinking */
+  margin: 5px 0; /* Add some vertical spacing */
+}
+
+#tarot-app-page #controls .checkbox-control input[type="checkbox"] {
+  /* Optional: Style the checkbox itself */
+  margin: 0; /* Remove default margin */
+  width: 1.1em; /* Adjust size */
+  height: 1.1em;
+  cursor: pointer;
+}
+
+#tarot-app-page #controls .checkbox-control label {
+  /* Ensure label doesn't have extra margin causing misalignment */
+  margin: 0;
+  cursor: pointer;
+  font-weight: normal; /* Override potential bold from general label style */
+}
+
 /* Card Placeholder - Defines the size and spacing */
 #tarot-app-page .card-placeholder {
     width: 180px; height: 300px; margin: 20px; position: relative;
