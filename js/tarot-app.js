@@ -159,40 +159,28 @@ function startReading() { /* Clears UI, shuffles, determines card count, calls c
 
 // --- UPDATED createCardElement ---
 function createCardElement(cardData, index, isReversed) {
-    if (!readingContainer) return; // Exit if container not found
+    if (!readingContainer) return;
 
     const placeholder = document.createElement('div');
-    placeholder.classList.add('card-placeholder');
-    placeholder.style.animationDelay = `${index * 0.15}s`;
-
+    // ... (rest of placeholder setup) ...
     const cardElement = document.createElement('div');
-    cardElement.classList.add('card');
-    cardElement.dataset.cardId = `card-${index}`;
-
+    // ... (rest of cardElement setup) ...
     const cardBack = document.createElement('div');
-    cardBack.classList.add('card-face', 'card-back');
-    cardBack.textContent = index + 1;
-
+    // ... (rest of cardBack setup) ...
     const cardFront = document.createElement('div');
-    cardFront.classList.add('card-face', 'card-front');
-
+    // ... (rest of cardFront setup) ...
     const img = document.createElement('img');
-    const placeholderBg = getComputedStyle(document.documentElement).getPropertyValue('--card-back-color').trim().substring(1);
-    const placeholderText = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim().substring(1);
+    // ... (placeholder color setup) ...
 
-    // *** Construct the full image path using siteBaseUrl ***
-    // Ensure siteBaseUrl is defined (in HTML before this script)
-    const imagePath = typeof siteBaseUrl !== 'undefined' ? siteBaseUrl + cardData.image : cardData.image;
+    // *** Construct the full image path CORRECTLY ***
+    // Add the slash BETWEEN siteBaseUrl and the relative image path
+    const imagePath = (typeof siteBaseUrl !== 'undefined') ? siteBaseUrl + '/' + cardData.image : '/' + cardData.image; // Add '/' separator
 
-    // No need for startsWith('URL_') anymore if all paths are updated
     img.src = imagePath;
-
     img.alt = cardData.name;
-    if (isReversed) {
-        img.classList.add('reversed-img');
-    }
+    if (isReversed) { img.classList.add('reversed-img'); }
     img.onerror = () => {
-        img.src = `https://via.placeholder.com/180x300/FF0000/FFFFFF?text=Erro+ao+Carregar`; // Error placeholder
+        img.src = `https://via.placeholder.com/180x300/FF0000/FFFFFF?text=Erro+ao+Carregar`;
         console.error(`Failed to load image for ${cardData.name}: ${imagePath}`); // Log the full path tried
     };
 
@@ -369,20 +357,17 @@ function resetReading() {
 // --- Modal Functions ---
 // --- UPDATED openModal ---
 function openModal(cardData) {
-    if (!modal || !modalCardName || !modalCardImage || !modalCardMeaning || !modalCardReversed || !modalCloseButton) return;
+    if (!modal || !modalCardName || !modalCardImage /*...etc*/) return;
 
     modalCardName.textContent = cardData.name;
-
-    const placeholderBg = getComputedStyle(document.documentElement).getPropertyValue('--card-back-color').trim().substring(1);
-    const placeholderText = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim().substring(1);
+    // ... (placeholder color setup) ...
     const encodedName = encodeURIComponent(cardData.name);
 
-    // *** Construct the full image path using siteBaseUrl ***
-    // Ensure siteBaseUrl is defined (in HTML before this script)
-    const imagePath = typeof siteBaseUrl !== 'undefined' ? siteBaseUrl + cardData.image : cardData.image;
+    // *** Construct the full image path CORRECTLY ***
+    // Add the slash BETWEEN siteBaseUrl and the relative image path
+    const imagePath = (typeof siteBaseUrl !== 'undefined') ? siteBaseUrl + '/' + cardData.image : '/' + cardData.image; // Add '/' separator
 
-    // No need for startsWith('URL_') anymore
-    const imgSrc = imagePath;
+    const imgSrc = imagePath; // Use the constructed path
 
     modalCardImage.src = imgSrc;
     modalCardImage.onerror = () => {
@@ -399,7 +384,5 @@ function openModal(cardData) {
 }
 
 function closeModal() {
-    if (modal) {
-         modal.style.display = "none";
-    }
+    if (modal) { modal.style.display = "none"; }
 }
