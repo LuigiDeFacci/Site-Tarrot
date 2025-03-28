@@ -6,6 +6,7 @@
   --text-color: #e8e8e8; /* Slightly brighter text */
   --accent-color: #b0a3d7; /* Slightly adjusted purple */
   --accent-hover: #c0b3e7; /* Lighter purple for hover - ADJUST AS NEEDED */
+  --accent-color-rgb: 176, 163, 215; /* RGB for rgba() usage */
   --soft-glow-color: rgba(176, 163, 215, 0.15); /* Soft purple glow */
   --card-back-color: #1f1f3a; /* Darker card back */
   --card-border-color: rgba(176, 163, 215, 0.25);
@@ -30,7 +31,6 @@ body {
   min-height: 100vh;
   position: relative;
   z-index: 0;
-  /* Apply flex to body to push footer down if content is short */
   display: flex;
   flex-direction: column;
 }
@@ -69,6 +69,7 @@ a:hover {
 img {
     max-width: 100%;
     height: auto;
+    display: block; /* Prevents bottom space */
 }
 
 /* === Header & Navigation (No Toggle) === */
@@ -97,7 +98,6 @@ img {
 /* --- Site Branding (Title) --- */
 .site-branding {
    /* Allow branding to take natural space */
-   /* Removed flex-grow: 1 to help centering on wrap */
 }
 
 .site-title {
@@ -121,7 +121,7 @@ img {
 
 /* --- Navigation --- */
 .main-nav {
-   /* Needs to take full width when wrapping */
+   /* Takes remaining space or full width on wrap */
 }
 
 .main-nav ul {
@@ -130,13 +130,10 @@ img {
     padding: 0;
     display: flex; /* Still use flex for horizontal layout */
     flex-wrap: wrap; /* Allow items to wrap */
-    justify-content: center; /* Center items horizontally */
+    justify-content: center; /* Center items horizontally when wrapped */
     align-items: center;
     gap: 1.5rem; /* Space between items */
 }
-
-/* No margin needed if using gap */
-/* .main-nav li:first-child { margin-left: 0; } */
 
 .main-nav a {
     color: var(--text-color);
@@ -176,37 +173,7 @@ img {
     color: var(--accent-hover); /* Highlight color */
 }
 
-
-/* --- Header Responsive (No Toggle) --- */
-@media (max-width: 768px) {
-    .header-container {
-        /* Change from space-between to center when stacking */
-        justify-content: center;
-        gap: 0.5rem; /* Keep small gap between title row and nav row */
-    }
-
-    .site-branding {
-       /* No longer force 100% width, let flex center it */
-       text-align: center; /* Keep title text itself centered */
-       /* Ensure it doesn't prevent nav from dropping below */
-       flex-basis: 100%; /* Make it take full width in the flex flow initially */
-       margin-bottom: 0.25rem; /* Add small space before nav */
-    }
-
-    .main-nav {
-        /* No longer force 100% width */
-        /* Ensure it appears below title */
-        flex-basis: 100%; /* Make it take full width in the flex flow */
-    }
-
-    .main-nav ul {
-        justify-content: center; /* Center the flex items (li) within the ul */
-        gap: 0.75rem 1.25rem; /* Adjust vertical/horizontal gap slightly */
-    }
-}
-
 /* === Main Content Area === */
-/* (Keep existing styles) */
 main {
     padding: 40px 20px;
     max-width: 1100px;
@@ -242,7 +209,6 @@ main section {
 }
 
 /* === Footer === */
-/* (Keep existing styles) */
 .site-footer {
     background-color: var(--header-footer-bg);
     padding: 20px 30px;
@@ -254,8 +220,115 @@ main section {
     width: 100%; /* Ensure footer spans width */
 }
 
+/* === Articles Listing Page Styles === */
+.post-list-container {
+    /* Inherits section styling, add specific if needed */
+    width: 100%;
+    max-width: 900px;
+}
+.post-list-container h2 {
+    margin-bottom: 25px;
+}
+.post-list {
+    list-style: none;
+    padding-left: 0;
+}
+.post-list li {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--card-border-color);
+}
+.post-list li:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+.post-meta {
+    font-size: 0.85em;
+    color: rgba(255, 255, 255, 0.7);
+    display: block;
+    margin-bottom: 8px;
+}
+.post-list h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-family: 'Cinzel', serif;
+    font-size: 1.4em;
+}
+.post-link {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+.post-link:hover {
+    color: var(--accent-hover);
+}
+
+/* === Individual Post Page Styles === */
+.post-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+.post-title {
+    font-family: 'Cinzel', serif;
+    font-size: 2.5em;
+    color: var(--accent-color);
+    margin: 0 0 10px 0;
+}
+/* .post-meta is shared with list */
+.post-content {
+    font-size: 1.1em;
+    line-height: 1.8;
+}
+.post-content h2 { /* Style subheadings within posts */
+    font-size: 1.7em;
+    margin-top: 40px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--card-border-color);
+    padding-bottom: 10px;
+}
+.post-content h3 {
+    font-size: 1.4em;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+.post-content p {
+    margin-bottom: 1.5em;
+    text-align: left; /* Align post text left usually */
+}
+.post-content ul, .post-content ol {
+    margin-bottom: 1.5em;
+    padding-left: 2em;
+}
+.post-content li {
+    margin-bottom: 0.5em;
+}
+.post-content blockquote {
+    border-left: 4px solid var(--accent-color);
+    padding-left: 1em;
+    margin-left: 0;
+    margin-right: 0;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.8);
+}
+.post-content code {
+    background-color: rgba(0,0,0,0.3);
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: monospace;
+}
+.post-content pre {
+    background-color: rgba(0,0,0,0.3);
+    padding: 1em;
+    border-radius: 5px;
+    overflow-x: auto;
+}
+.post-content pre code {
+    background-color: transparent;
+    padding: 0;
+}
+
+
 /* === TAROT APP SPECIFIC STYLES === */
-/* (Keep existing styles) */
 #tarot-app-page h1 {
     margin-bottom: 30px;
 }
@@ -276,42 +349,49 @@ main section {
 
 #tarot-app-page #reading-container {
     display: flex; justify-content: center; align-items: flex-start; flex-wrap: wrap;
-    margin-top: 20px; margin-bottom: 20px; min-height: 350px; perspective: 1200px;
+    margin-top: 20px; margin-bottom: 20px; min-height: 350px; /* Adjust min-height as needed */
+    perspective: 1200px; /* Apply perspective for 3D effect */
     width: 100%; padding: 10px;
 }
 
+/* Card Placeholder - Defines the size and spacing */
 #tarot-app-page .card-placeholder {
-    width: 180px; height: 300px; margin: 20px; position: relative; opacity: 0;
+    /* Base size */
+    width: 180px;
+    height: 300px;
+    margin: 20px; /* Spacing around cards */
+    position: relative;
+    opacity: 0;
     transform: translateY(25px) scale(0.95);
     animation: dealCard 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
-    flex-shrink: 0;
+    flex-shrink: 0; /* Prevent shrinking if container is tight */
+    perspective: 1200px; /* Apply perspective to the individual card container */
 }
 @keyframes dealCard { to { opacity: 1; transform: translateY(0) scale(1); } }
 
+/* The 3D container - takes full size of placeholder */
 #tarot-app-page .card {
     width: 100%;
     height: 100%;
     position: relative;
-    /* CRITICAL: Enables 3D space for children */
-    transform-style: preserve-3d;
-    /* CRITICAL: Defines the flip animation */
-    transition: transform 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transform-style: preserve-3d; /* Enable 3D space for children */
+    transition: transform 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Flip animation */
     cursor: pointer;
 }
-#tarot-app-page .card.flipped { transform: rotateY(180deg); }
 
+/* Shared styles for both faces */
 #tarot-app-page .card-face {
-    position: absolute; /* Stack faces on top of each other */
+    position: absolute; /* Stack faces */
     width: 100%;
     height: 100%;
-    /* CRITICAL: Hides the back of the element when facing away */
-    backface-visibility: hidden;
-    border-radius: 12px; /* Apply rounding to faces */
-    overflow: hidden;    /* Ensures image corners don't peek out */
+    backface-visibility: hidden; /* Hide the back when rotated */
+    border-radius: 12px; /* Round corners */
+    overflow: hidden;    /* IMPORTANT: Clip anything sticking out */
     box-shadow: 6px 6px 18px var(--shadow-color);
 }
+
+/* The back face - visible initially */
 #tarot-app-page .card-back {
-    /* Should be the face initially visible */
     background: linear-gradient(135deg, var(--card-back-color) 0%, #2a2a4a 100%);
     border: 1px solid var(--card-border-color);
     color: var(--accent-color);
@@ -320,23 +400,45 @@ main section {
     align-items: center;
     font-size: 2.8em;
     font-family: 'Cinzel', serif;
-    /* No rotation needed for the back */
+    /* No rotation needed initially */
 }
 
+/* The front face - hidden initially */
 #tarot-app-page .card-front {
-    background-color: var(--card-back-color); /* Fallback bg */
+    background-color: var(--card-back-color); /* Fallback background */
     border: 1px solid var(--card-border-color);
-    /* CRITICAL: Initially rotated 180 degrees so it's facing away */
+    transform: rotateY(180deg); /* Start rotated 180deg */
+    /* overflow: hidden; /* Redundant but safe */
+}
+
+/* *** Image Sizing *** */
+#tarot-app-page .card-front img {
+    display: block;       /* Prevent extra space */
+    width: 100%;          /* Fill container width */
+    height: 100%;         /* Fill container height */
+    object-fit: cover;    /* Scale to cover, crop if needed */
+    border-radius: inherit; /* Match face rounding */
+    /* Position absolutely within the face container */
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* Rotation applied to the whole card when JS adds '.flipped' */
+#tarot-app-page .card.flipped {
     transform: rotateY(180deg);
 }
-#tarot-app-page .card-front img {
-    display: block; /* Removes potential extra space below image */
-    width: 100%;    /* Make image fill the container width */
-    height: 100%;   /* Make image fill the container height */
-    object-fit: cover; /* Scale image to maintain aspect ratio while filling container. Crops if necessary. Use 'contain' if you want to see the whole image, possibly with letterboxing. */
-    border-radius: inherit; /* Inherit the parent's border-radius */
+
+/* Style for reversed images (rotates image within the front face) */
+#tarot-app-page .card-front img.reversed-img {
+    /* Rotate the image itself */
+    transform: rotate(180deg);
+    /* Ensure it's still positioned correctly after rotation */
+    position: absolute;
+    top: 0;
+    left: 0;
 }
-#tarot-app-page .card-front img.reversed-img { transform: rotate(180deg); }
+
 
 #tarot-app-page #reading-result {
     margin-top: 40px; padding: 35px; background-color: rgba(10, 10, 20, 0.6);
@@ -379,7 +481,6 @@ main section {
 }
 
 /* === Modal Styles === */
-/* (Keep existing styles) */
 .modal {
     display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
     overflow: auto; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(6px);
@@ -403,112 +504,62 @@ main section {
 .modal-content strong { color: var(--accent-color); display: block; margin-bottom: 6px; font-size: 1.05em; }
 .modal-content::after { content: ""; clear: both; display: table; }
 
+
 /* === Landing Page Specific Styles === */
-
 .landing-image {
-  display: block; /* Prevents extra space below image */
-  max-width: 600px; /* Max size */
-  width: 90%; /* Responsive width */
-  margin: 10px auto 30px auto; /* Center image and add space */
-  border-radius: 12px; /* Nicer rounded corners */
-  box-shadow: 0 8px 25px var(--shadow-color); /* Use existing shadow */
-  border: 1px solid var(--card-border-color); /* Subtle border */
-}
-
-/* Call-to-Action Section */
-.cta-section {
-  background-color: rgba(var(--accent-color-rgb, 176, 163, 215), 0.1); /* Use accent glow */
+  display: block; max-width: 600px; width: 90%; margin: 10px auto 30px auto;
+  border-radius: 12px; box-shadow: 0 8px 25px var(--shadow-color);
   border: 1px solid var(--card-border-color);
-  border-radius: 12px;
-  padding: 25px 30px;
-  margin: 40px auto; /* Space it out */
-  max-width: 750px; /* Control width */
-  text-align: center;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
-
-.cta-section h2 {
-  margin-top: 0;
-  margin-bottom: 15px;
-  font-size: 1.6em; /* Make CTA heading stand out */
-  color: var(--accent-color);
+.cta-section {
+  background-color: rgba(var(--accent-color-rgb, 176, 163, 215), 0.1);
+  border: 1px solid var(--card-border-color); border-radius: 12px; padding: 25px 30px;
+  margin: 40px auto; max-width: 750px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
-
-.cta-section p {
-  margin-bottom: 25px;
-  font-size: 1.1em;
-  line-height: 1.7;
-  max-width: 600px; /* Limit paragraph width inside */
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* Basic Button Styling */
+.cta-section h2 { margin-top: 0; margin-bottom: 15px; font-size: 1.6em; color: var(--accent-color); }
+.cta-section p { margin-bottom: 25px; font-size: 1.1em; line-height: 1.7; max-width: 600px; margin-left: auto; margin-right: auto; }
 .button {
-    display: inline-block; /* Allows padding and margins */
-    padding: 12px 25px;
-    font-size: 1.05em;
-    font-weight: bold;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: none;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    display: inline-block; padding: 12px 25px; font-size: 1.05em; font-weight: bold;
+    text-align: center; text-decoration: none; border-radius: 8px; cursor: pointer;
+    transition: all 0.3s ease; border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
-
-/* Primary Button Style (for Tarot CTA) */
 .button-primary {
-    background: linear-gradient(to bottom right, var(--accent-color), #8f83b9); /* Use your accent gradient */
-    color: #fff;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
-    text-transform: uppercase;
-    letter-spacing: 1.1px;
+    background: linear-gradient(to bottom right, var(--accent-color), #8f83b9); color: #fff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.4); text-transform: uppercase; letter-spacing: 1.1px;
 }
-
-.button-primary:hover,
-.button-primary:focus {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
-    filter: brightness(1.15);
-    color: #fff; /* Ensure text stays white on hover */
+.button-primary:hover, .button-primary:focus {
+    transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+    filter: brightness(1.15); color: #fff;
 }
+.explore-link { text-align: center; margin-top: 30px; font-size: 0.95em; opacity: 0.9; }
 
-/* Optional: Style for the secondary explore link */
-.explore-link {
-  text-align: center;
-  margin-top: 30px;
-  font-size: 0.95em;
-  opacity: 0.9;
-}
-
-/* --- Responsive Adjustments for Landing Page --- */
-
-@media (max-width: 600px) {
-  .landing-image {
-    max-width: 95%; /* Allow slightly larger on smaller screens */
-  }
-
-  .cta-section {
-    padding: 20px;
-  }
-
-  .cta-section h2 {
-    font-size: 1.4em;
-  }
-
-  .cta-section p {
-    font-size: 1em;
-  }
-
-  .button {
-    padding: 10px 20px;
-    font-size: 1em;
-  }
-}
 
 /* === Responsive Adjustments === */
+
+/* Header wrapping */
+@media (max-width: 768px) {
+    .header-container {
+        justify-content: center; gap: 0.5rem;
+    }
+    .site-branding {
+       text-align: center; flex-basis: 100%; margin-bottom: 0.25rem;
+    }
+    .main-nav {
+        flex-basis: 100%;
+    }
+    .main-nav ul {
+        justify-content: center; gap: 0.75rem 1.25rem;
+    }
+}
+
+/* Landing Page small screens */
+@media (max-width: 600px) {
+  .landing-image { max-width: 95%; }
+  .cta-section { padding: 20px; }
+  .cta-section h2 { font-size: 1.4em; }
+  .cta-section p { font-size: 1em; }
+  .button { padding: 10px 20px; font-size: 1em; }
+}
 
 /* Tablet Adjustments */
 @media (max-width: 960px) {
@@ -525,7 +576,8 @@ main section {
 
     /* Tarot controls stack */
     #tarot-app-page #controls > div { width: 100%; }
-    #tarot-app-page #controls > button { width: auto; margin-top: 0; } /* Allow button auto width */
+    #tarot-app-page #controls > button { width: auto; margin-top: 0; }
+    /* Tarot Card placeholder size */
     #tarot-app-page .card-placeholder { width: 150px; height: 250px; margin: 15px; }
     #tarot-app-page #reading-result { padding: 25px; font-size: 1em; }
     #tarot-app-page #reading-result h2 { font-size: 1.5em; }
@@ -544,12 +596,13 @@ main section {
     main h1, #tarot-app-page h1 { font-size: 1.8em; }
 
     /* Header adjusts slightly */
-    .header-container { padding: 0 15px; } /* Adjust side padding */
-    .main-nav ul { gap: 0.5rem 1rem; } /* Reduce gap further */
+    .header-container { padding: 0 15px; }
+    .main-nav ul { gap: 0.5rem 1rem; }
 
     /* Tarot controls adjustments */
     #tarot-app-page #controls { padding: 15px; gap: 15px; }
-    #tarot-app-page #controls > button { width: 100%; } /* Full width button */
+    #tarot-app-page #controls > button { width: 100%; }
+    /* Tarot Card placeholder size */
     #tarot-app-page .card-placeholder { width: 110px; height: 185px; margin: 10px; }
     #tarot-app-page #reading-container { padding: 5px; }
     #tarot-app-page #reading-result { font-size: 0.95em; padding: 15px; }
@@ -560,7 +613,7 @@ main section {
 
     /* Modal adjustments */
     .modal-content { width: 95%; margin: 12% auto; padding: 20px;}
-    .modal-content img { float: none; max-width: 100px; margin: 0 auto 15px auto; display: block; } /* Center image */
+    .modal-content img { float: none; max-width: 100px; margin: 0 auto 15px auto; display: block; }
     .modal-content h3 { font-size: 1.2em; }
     .modal-content p { font-size: 0.9em; line-height: 1.6; }
 }
