@@ -122,75 +122,115 @@ function shuffle(array) { /* Fisher-Yates Shuffle */
     for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; }
 }
 
-function startReading() { /* Clears UI, shuffles, determines card count, calls createCardElement */
-    // Check if required elements exist
-    if (!controlsDiv || !readingResult || !readingContainer || !readAgainButton || !spreadSelect) {
-        console.error("One or more essential DOM elements not found!");
+// --- UPDATED startReading Function ---
+function startReading() {
+    // Check if already running
+    if (readingInProgress) {
+        console.log("Reading already in progress, skipping.");
         return;
     }
-    if (readingInProgress) return; readingInProgress = true;
-    controlsDiv.style.display = 'none'; readingResult.innerHTML = ''; readingResult.classList.remove('visible');
-    readingContainer.innerHTML = ''; drawnCardsData = []; readAgainButton.style.display = 'none';
-    const spreadIdentifier = spreadSelect.value; let numberOfCards;
+    readingInProgress = true; // Set flag immediately
 
-    if (spreadIdentifier === 'love5') { numberOfCards = 5; }
-    else if (spreadIdentifier === 'celtic10') { numberOfCards = 10; }
-    else { numberOfCards = parseInt(spreadIdentifier); }
+    console.log("Starting new reading..."); // Debug log
 
-    if (isNaN(numberOfCards) || numberOfCards <= 0 || numberOfCards > cards.length) {
-        console.error("Invalid number of cards selected or spread identifier unknown:", spreadIdentifier);
-        readingInProgress = false;
-        controlsDiv.style.display = 'flex';
-        return;
+    // Wrap core logic in try...finally to ensure flag is reset
+    try {
+        // Check if required elements exist at the start of the function
+        if (!controlsDiv || !readingResult || !readingContainer || !readAgainButton || !spreadSelect) {
+            console.error("Cannot start reading: One or more essential DOM elements not found!");
+            // No need to reset readingInProgress here, finally block handles it
+            return; // Exit if elements are missing
+        }
+
+        controlsDiv.style.display = 'none';
+        readingResult.innerHTML = '';
+        readingResult.classList.remove('visible');
+        readingContainer.innerHTML = ''; // Clear previous cards
+        drawnCardsData = [];
+        readAgainButton.style.display = 'none';
+
+        const spreadIdentifier = spreadSelect.value;
+        let numberOfCards;
+
+        console.log("Selected Spread:", spreadIdentifier); // Debug log
+
+        if (spreadIdentifier === 'love5') { numberOfCards = 5; }
+        else if (spreadIdentifier === 'celtic10') { numberOfCards = 10; }
+        else { numberOfCards = parseInt(spreadIdentifier); }
+
+        if (isNaN(numberOfCards) || numberOfCards <= 0 || numberOfCards > cards.length) {
+            console.error("Invalid number of cards selected or spread identifier unknown:", spreadIdentifier, numberOfCards);
+            if (controlsDiv) controlsDiv.style.display = 'flex'; // Show controls again on input error
+            // No need to reset readingInProgress here, finally block handles it
+            return; // Exit on invalid input
+        }
+
+        console.log("Number of cards:", numberOfCards); // Debug log
+
+        let shuffledDeck = [...cards];
+        shuffle(shuffledDeck);
+        const spread = shuffledDeck.slice(0, numberOfCards);
+
+        console.log("Dealing cards..."); // Debug log
+
+        spread.forEach((cardData, index) => {
+            const isReversed = Math.random() < 0.3;
+            drawnCardsData.push({ ...cardData, reversed: isReversed, id: `card-${index}`, spread: spreadIdentifier });
+            // Add a check within createCardElement too, but log if it might fail
+            if (!readingContainer) {
+                 console.error("readingContainer not found before calling createCardElement for card", index);
+                 // Optionally throw an error or handle differently
+            }
+            createCardElement(cardData, index, isReversed);
+        });
+
+        // Delay enabling clicks
+        setTimeout(() => {
+            if (readingContainer) {
+                readingContainer.addEventListener('click', handleCardClick);
+                console.log("Card click listener added."); // Debug log
+            } else {
+                 console.error("readingContainer not found when trying to add click listener.");
+            }
+            // IMPORTANT: Only set readingInProgress to false *after* setup is complete
+            // readingInProgress = false; // MOVED THIS to the finally block below
+        }, numberOfCards * 150 + 100);
+
+    } catch (error) {
+        console.error("Error during startReading:", error);
+        // Attempt to reset UI elements in case of error
+        if (controlsDiv) controlsDiv.style.display = 'flex';
+        if (readingContainer) readingContainer.innerHTML = '<p style="color: red;">Ocorreu um erro ao iniciar a leitura.</p>';
+        // readingInProgress will be reset by the finally block
+
+    } finally {
+        // CRITICAL: Ensure readingInProgress is reset regardless of success or failure,
+        // but delay it slightly to allow the initial click protection to work fully
+        // and prevent immediate re-clicks if setup was fast.
+        setTimeout(() => {
+             readingInProgress = false;
+             console.log("readingInProgress set to false."); // Debug log
+        }, 100); // Short delay
     }
-    let shuffledDeck = [...cards]; shuffle(shuffledDeck); const spread = shuffledDeck.slice(0, numberOfCards);
-    spread.forEach((cardData, index) => {
-        const isReversed = Math.random() < 0.3;
-        drawnCardsData.push({ ...cardData, reversed: isReversed, id: `card-${index}`, spread: spreadIdentifier });
-        createCardElement(cardData, index, isReversed);
-    });
-    setTimeout(() => {
-         if (readingContainer) { // Check element exists before adding listener
-            readingContainer.addEventListener('click', handleCardClick);
-         }
-         readingInProgress = false;
-    }, numberOfCards * 150 + 100);
 }
+
+// Add similar console logs and checks to other functions if needed
 
 // --- UPDATED createCardElement ---
-function createCardElement(cardData, index, isReversed) {
-    if (!readingContainer) return;
-
-    const placeholder = document.createElement('div');
-    // ... (rest of placeholder setup) ...
-    const cardElement = document.createElement('div');
-    // ... (rest of cardElement setup) ...
-    const cardBack = document.createElement('div');
-    // ... (rest of cardBack setup) ...
-    const cardFront = document.createElement('div');
-    // ... (rest of cardFront setup) ...
+function createCardElement(cardData, index, isReversed) { /* Creates HTML for each card with animation */
+    const placeholder = document.createElement('div'); placeholder.classList.add('card-placeholder'); placeholder.style.animationDelay = `${index * 0.15}s`;
+    const cardElement = document.createElement('div'); cardElement.classList.add('card'); cardElement.dataset.cardId = `card-${index}`;
+    const cardBack = document.createElement('div'); cardBack.classList.add('card-face', 'card-back'); cardBack.textContent = index + 1;
+    const cardFront = document.createElement('div'); cardFront.classList.add('card-face', 'card-front');
     const img = document.createElement('img');
-    // ... (placeholder color setup) ...
-
-    // *** Construct the full image path CORRECTLY ***
-    // Add the slash BETWEEN siteBaseUrl and the relative image path
-    const imagePath = (typeof siteBaseUrl !== 'undefined') ? siteBaseUrl + '/' + cardData.image : '/' + cardData.image; // Add '/' separator
-
-    img.src = imagePath;
-    img.alt = cardData.name;
-    if (isReversed) { img.classList.add('reversed-img'); }
-    img.onerror = () => {
-        img.src = `https://via.placeholder.com/180x300/FF0000/FFFFFF?text=Erro+ao+Carregar`;
-        console.error(`Failed to load image for ${cardData.name}: ${imagePath}`); // Log the full path tried
-    };
-
-    cardFront.appendChild(img);
-    cardElement.appendChild(cardBack);
-    cardElement.appendChild(cardFront);
-    placeholder.appendChild(cardElement);
-    readingContainer.appendChild(placeholder);
+    const placeholderBg = getComputedStyle(document.documentElement).getPropertyValue('--card-back-color').substring(1); const placeholderText = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').substring(1);
+    // Changed placeholder text to Portuguese
+    img.src = cardData.image.startsWith('URL_') ? `https://via.placeholder.com/180x300/${placeholderBg}/${placeholderText}?text=Carta+${index+1}` : cardData.image;
+    img.alt = cardData.name; if (isReversed) img.classList.add('reversed-img');
+    img.onerror = () => { img.src = `https://via.placeholder.com/180x300/FF0000/FFFFFF?text=Erro+ao+Carregar`; console.error(`Failed to load image for ${cardData.name}`); };
+    cardFront.appendChild(img); cardElement.appendChild(cardBack); cardElement.appendChild(cardFront); placeholder.appendChild(cardElement); readingContainer.appendChild(placeholder);
 }
-
+        
 function handleCardClick(event) {
     if (readingInProgress || !readingContainer) return;
 
