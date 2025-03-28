@@ -349,44 +349,42 @@ main section {
 
 #tarot-app-page #reading-container {
     display: flex; justify-content: center; align-items: flex-start; flex-wrap: wrap;
-    margin-top: 20px; margin-bottom: 20px; min-height: 350px; /* Adjust min-height as needed */
-    perspective: 1200px; /* Apply perspective for 3D effect */
+    margin-top: 20px; margin-bottom: 20px; min-height: 350px;
+    perspective: 1200px; /* Root perspective */
     width: 100%; padding: 10px;
 }
 
 /* Card Placeholder - Defines the size and spacing */
 #tarot-app-page .card-placeholder {
-    /* Base size */
-    width: 180px;
-    height: 300px;
-    margin: 20px; /* Spacing around cards */
-    position: relative;
-    opacity: 0;
-    transform: translateY(25px) scale(0.95);
-    animation: dealCard 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
-    flex-shrink: 0; /* Prevent shrinking if container is tight */
-    perspective: 1200px; /* Apply perspective to the individual card container */
+    width: 180px; height: 300px; margin: 20px; position: relative;
+    /* Removed opacity, transform, animation if they interfere */
+    flex-shrink: 0;
+    perspective: 1200px; /* Also apply here for better support */
 }
+
 @keyframes dealCard { to { opacity: 1; transform: translateY(0) scale(1); } }
 
 /* The 3D container - takes full size of placeholder */
 #tarot-app-page .card {
     width: 100%;
     height: 100%;
-    position: relative;
-    transform-style: preserve-3d; /* Enable 3D space for children */
+    position: absolute; /* Make sure it fills placeholder */
+    top: 0;
+    left: 0;
+    transform-style: preserve-3d; /* Enable 3D space */
     transition: transform 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Flip animation */
     cursor: pointer;
+     /* Initial state: showing the back */
+     transform: rotateY(0deg);
 }
-
 /* Shared styles for both faces */
 #tarot-app-page .card-face {
-    position: absolute; /* Stack faces */
+    position: absolute;
     width: 100%;
     height: 100%;
     backface-visibility: hidden; /* Hide the back when rotated */
-    border-radius: 12px; /* Round corners */
-    overflow: hidden;    /* IMPORTANT: Clip anything sticking out */
+    border-radius: 12px;
+    overflow: hidden; /* Clip content */
     box-shadow: 6px 6px 18px var(--shadow-color);
 }
 
@@ -394,49 +392,40 @@ main section {
 #tarot-app-page .card-back {
     background: linear-gradient(135deg, var(--card-back-color) 0%, #2a2a4a 100%);
     border: 1px solid var(--card-border-color);
-    color: var(--accent-color);
+    color: var(--accent-color); /* Make number visible */
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 2.8em;
-    font-family: 'Cinzel', serif;
-    /* No rotation needed initially */
+    font-size: 2.8em; /* Size for number */
+    font-family: 'Cinzel', serif; /* Font for number */
+    /* No rotation needed - faces viewer initially */
+     transform: rotateY(0deg);
 }
-
 /* The front face - hidden initially */
 #tarot-app-page .card-front {
-    background-color: var(--card-back-color); /* Fallback background */
+    background-color: var(--card-back-color);
     border: 1px solid var(--card-border-color);
-    transform: rotateY(180deg); /* Start rotated 180deg */
-    /* overflow: hidden; /* Redundant but safe */
+    transform: rotateY(180deg); /* Start rotated 180deg to be hidden */
 }
 
 /* *** Image Sizing *** */
 #tarot-app-page .card-front img {
-    display: block;       /* Prevent extra space */
-    width: 100%;          /* Fill container width */
-    height: 100%;         /* Fill container height */
-    object-fit: cover;    /* Scale to cover, crop if needed */
-    border-radius: inherit; /* Match face rounding */
-    /* Position absolutely within the face container */
-    position: absolute;
-    top: 0;
-    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+    /* No position:absolute needed if only child */
 }
 
 /* Rotation applied to the whole card when JS adds '.flipped' */
 #tarot-app-page .card.flipped {
-    transform: rotateY(180deg);
+    transform: rotateY(180deg); /* Rotate the whole card */
 }
 
 /* Style for reversed images (rotates image within the front face) */
 #tarot-app-page .card-front img.reversed-img {
-    /* Rotate the image itself */
     transform: rotate(180deg);
-    /* Ensure it's still positioned correctly after rotation */
-    position: absolute;
-    top: 0;
-    left: 0;
 }
 
 
@@ -616,4 +605,12 @@ main section {
     .modal-content img { float: none; max-width: 100px; margin: 0 auto 15px auto; display: block; }
     .modal-content h3 { font-size: 1.2em; }
     .modal-content p { font-size: 0.9em; line-height: 1.6; }
+}
+
+/* === Responsive Placeholders (Ensure these are correct) === */
+@media (max-width: 768px) {
+    #tarot-app-page .card-placeholder { width: 150px; height: 250px; margin: 15px; }
+}
+@media (max-width: 480px) {
+    #tarot-app-page .card-placeholder { width: 110px; height: 185px; margin: 10px; }
 }
