@@ -31,6 +31,12 @@ id: tarot-app-page # Add ID for CSS scoping
     <!-- Interpretation will be shown here -->
 </div>
 
+<script>
+  // This uses Jekyll to figure out the correct base path for your site
+  // It will be "/" if run locally or on a user page, or "/Site-Tarrot/" on your project page.
+  const siteBaseUrl = "{{ '' | relative_url }}";
+</script>
+
 <button id="read-again-button" style="display: none;">Ler Novamente</button>
 
 <!-- The Modal -->
@@ -47,4 +53,4 @@ id: tarot-app-page # Add ID for CSS scoping
 
 <!-- Link the Tarot App JavaScript ONLY on this page -->
 <!-- IMPORTANT: Make sure the path is correct relative to the root -->
-<script src="/Site-Tarrot/js/tarot-app.js" defer></script>
+<script src="{{ '/js/tarot-app.js' | relative_url }}"></script>
